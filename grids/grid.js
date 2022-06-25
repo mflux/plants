@@ -23,8 +23,14 @@ class Grid {
 
   // index in cells to x y coordinate.
   indexToXY(index) {
-    x = index % this.width;
-    y = index / this.width;
+    const x = index % this.width;
+    const y = index / this.width;
+    return [x, y]
+  }
+
+  indexToVector(index) {
+    const [x, y] = this.indexToXY(index);
+    return createVector(x, y);
   }
 
   // Loop over each x y, returning its value as well.

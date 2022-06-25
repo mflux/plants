@@ -6,13 +6,17 @@ let PP;// one plant for testing, later make an array instead
 // A dict of grids, each representing a grid of data.
 const grids = {
   earth: new Earth(SIM_WIDTH, SIM_HEIGHT, SoilType.Soft),
-  moisture: new Moisture(SIM_WIDTH, SIM_HEIGHT, 0.0)
+  moisture: new Moisture(SIM_WIDTH, SIM_HEIGHT, 0.0),
+  plantMatter: new PlantMatter(SIM_WIDTH, SIM_HEIGHT)
 };
 
 // Renders a grid with a callback on how to handle each cell->color.
 function renderGrid(grid, colorFunc) {
   grid.forEachIndexValue((gridIndex, value) => {
     c = colorFunc(gridIndex, value);
+    if (c === undefined) {
+      return;
+    }
     pixelIndex = gridIndex * 4;
     pixels[pixelIndex] = red(c);
     pixels[pixelIndex+1] = green(c);
@@ -65,7 +69,7 @@ function draw() {
 
   // Place pixels based on the grid.
   loadPixels();
-  
+
   renderGrid(grids.earth, (index, value) => {
     switch (value) {
       case SoilType.None:
@@ -78,6 +82,12 @@ function draw() {
         return color(54, 52, 51);
       default:
         return color(255, 255, 0);
+    }
+  });
+
+  renderGrid(grids.plantMatter, (index, value) => {
+    if (value != null) {
+      return color(200, 0, 0);
     }
   });
 
