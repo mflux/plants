@@ -31,34 +31,23 @@ class Plant {
       // 
       let foundRoot = false;
   
-      for (var i = 0; i < 100; i++) {
+      for (var i = 0; i < 1000; i++) {
         if(foundRoot == false){
-        let dirIdx = int(random(0, 7));
-        let dirVec = createVector(0, 0);
-  
-        if (dirIdx == 0) {
-          dirVec = createVector(-1, 0);
-        } else if (dirIdx == 1) {
-          dirVec = createVector(-1, 1);
-        } else if (dirIdx == 2) {
-          dirVec = createVector(0, 1);
-        } 
-        else if (dirIdx == 3) {
-          dirVec = createVector(1, 1);
-        } else if (dirIdx == 4) {
-          dirVec = createVector(1, 0);
-        }else if (dirIdx == 5) {
-          dirVec = createVector(2, 0);
-        }else if (dirIdx == 6) {
-          dirVec = createVector(-2, 0);
-        }
-  
-        
+       
+        let spreadAng = 130;
+        let myDegrees = map(random(), 0, 1, 90+spreadAng, 90-spreadAng);
+        let ammtMove = int(random(1,5));
+        let dirVec = p5.Vector.fromAngle(radians(myDegrees), ammtMove);
+
+        dirVec.x = int(dirVec.x)
+        dirVec.y = int(dirVec.y)
+
         let rootRange = constrain(this.roots.length-50, 0, this.roots.length)
         
-        let rootPick = int(random(rootRange,this.roots.length));
+        let rootPick = int(random(rootRange,this.roots.length)); // pick only from the past 50 root pixels
   
         let nextPossibleRoot = p5.Vector.add(this.roots[rootPick], dirVec);
+        // print(nextPossibleRoot)
   
         let earthType =  grids.earth.get(nextPossibleRoot.x, nextPossibleRoot.y);// == SoilType.Soft
 
