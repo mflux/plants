@@ -1,6 +1,8 @@
 const SIM_WIDTH = 256;
 const SIM_HEIGHT = 256;
 
+let PP;// one plant for testing, later make an array instead
+
 // A dict of grids, each representing a grid of data.
 const grids = {
   earth: new Earth(SIM_WIDTH, SIM_HEIGHT, SoilType.Soft),
@@ -52,6 +54,10 @@ function setup() {
     }
     return 0;
   });
+
+  PP = new Plant(int(random(width)), height - 100); // create one plant for testing
+
+
 }
 
 function draw() {
@@ -59,6 +65,7 @@ function draw() {
 
   // Place pixels based on the grid.
   loadPixels();
+  
   renderGrid(grids.earth, (index, value) => {
     switch (value) {
       case SoilType.None:
@@ -73,5 +80,9 @@ function draw() {
         return color(255, 255, 0);
     }
   });
+
   updatePixels();
+
+  PP.runDraw();
+
 }
