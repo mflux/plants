@@ -24,7 +24,10 @@ function renderGrid(grid, colorFunc) {
 
 function setup() {
   pixelDensity(1);
-  createCanvas(SIM_WIDTH, SIM_HEIGHT);
+  noSmooth();
+  const canvas = createCanvas(SIM_WIDTH, SIM_HEIGHT);
+  canvas.style("transform", "scale(2) translate(25%, 25%)");
+  canvas.style("image-rendering", "pixelated");
 
   // Generate some soil.
   const earthNoiseScale = 0.01;
@@ -49,7 +52,6 @@ function setup() {
     }
     return 0;
   });
-
 }
 
 function draw() {
