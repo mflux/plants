@@ -59,3 +59,22 @@ class Plant {
     this.roots.push(this.plantMatterGrid.xyToIndex(x, y));
   }
 }
+
+// Looks for the nearest soft soil, given an x and  earth grid.
+function searchForAppropriatePlantY(x, earthGrid) {
+  let y = 0;
+  let tries = 0;
+  const maxTries = 10000;
+  while (earthGrid.get(x, y) !== SoilType.Soft && tries < maxTries) {
+    y += 1;
+    tries++;
+  }
+  return y;
+}
+
+// Spawns a plant, given an earth grid.
+function spawnPlant(earthGrid) {
+  const plantX = int(random(earthGrid.width));
+  const plantY = searchForAppropriatePlantY(plantX, earthGrid);
+  return new Plant(plantX, plantY, grids.plantMatter, earthGrid);
+}
