@@ -5,13 +5,16 @@ class Plant {
 
     this.roots = [];
 
-    this.makeNewRoot(initialPlantX, initialPlantY);
+    // this.makeNewRoot(initialPlantX, initialPlantY);
+
+    this.makeNewRoot(createVector(initialPlantX, initialPlantY),createVector(initialPlantX, initialPlantY+1));
+
 
     this.health = 100;
     this.growth = 0;
-    this.spreadAngle = 30;
+    this.spreadAngle = 60;
     this.minGrowDistance = 1;
-    this.maxGrowDistance = 5;
+    this.maxGrowDistance = 15;
     this.pickRootRange = 50;
   }
 
@@ -47,16 +50,23 @@ class Plant {
         let earthType =  this.earthGrid.get(nextPossibleRoot.x, nextPossibleRoot.y);
         if (doesPlantExistAtIndex(this.roots[rootPick]) && earthType == SoilType.Soft) {
           foundRoot = true;
-          this.makeNewRoot(nextPossibleRoot.x, nextPossibleRoot.y);
+           this.makeNewRoot(rootVector, nextPossibleRoot);
           break;
         }
       }
     }
   }
 
-  makeNewRoot(x, y) {
-    this.plantMatterGrid.set(x, y, this);
-    this.roots.push(this.plantMatterGrid.xyToIndex(x, y));
+   makeNewRoot(fromPos,toPos) {
+
+    let d =fromPos.dist( toPos);
+
+    for (let index = 0; index < d; index++) {
+        let inc = index/d;
+        let midPos = p5.Vector.lerp(fromPos, toPos, inc);
+        this.plantMatterGrid.set(midPos.x, midPos.y, this);
+        this.roots.push(this.plantMatterGrid.xyToIndex(midPos.x, midPos.y));
+    }
   }
 }
 
