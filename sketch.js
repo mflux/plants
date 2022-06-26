@@ -59,9 +59,8 @@ function setup() {
     return 0;
   });
 
-  PP = new Plant(int(random(width)), height - 100); // create one plant for testing
-
-
+  // create one plant for testing
+  PP = new Plant(int(random(width)), height - 100, grids.plantMatter, grids.earth);
 }
 
 function draw() {

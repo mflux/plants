@@ -1,8 +1,11 @@
 class Plant {
-  constructor(x, y) {
+  constructor(initialPlantX, initialPlantY, plantMatterGrid, earthGrid) {
+    this.plantMatterGrid = plantMatterGrid;
+    this.earthGrid = earthGrid;
+
     this.roots = [];
 
-    this.makeNewRoot(x, y);
+    this.makeNewRoot(initialPlantX, initialPlantY);
 
     this.health = 100;
     this.growth = 0;
@@ -39,9 +42,9 @@ class Plant {
         // Pick only from the past 50 root pixels.
         let rootPick = int(random(rootRange, this.roots.length));
 
-        const rootVector = grids.plantMatter.indexToVector(this.roots[rootPick]);
+        const rootVector = this.plantMatterGrid.indexToVector(this.roots[rootPick]);
         let nextPossibleRoot = p5.Vector.add(rootVector, dirVec);
-        let earthType =  grids.earth.get(nextPossibleRoot.x, nextPossibleRoot.y);
+        let earthType =  this.earthGrid.get(nextPossibleRoot.x, nextPossibleRoot.y);
         if (doesPlantExistAtIndex(this.roots[rootPick]) && earthType == SoilType.Soft) {
           foundRoot = true;
           this.makeNewRoot(nextPossibleRoot.x, nextPossibleRoot.y);
@@ -52,7 +55,7 @@ class Plant {
   }
 
   makeNewRoot(x, y) {
-    grids.plantMatter.set(x, y, this);
-    this.roots.push(grids.plantMatter.xyToIndex(x, y));
+    this.plantMatterGrid.set(x, y, this);
+    this.roots.push(this.plantMatterGrid.xyToIndex(x, y));
   }
 }
