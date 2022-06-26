@@ -14,10 +14,10 @@ createTest("Local total moisture value is calculated.", function localTotalMoist
   return testMoistureGrid.computeLocalMoisture(1, 1).totalLocalMoisture;
 }, 4);
 
-createTest("Highest local moisture value is calculated.", function localTotalMoistureTest(){
+createTest("Highest local moisture value is calculated.", function highestLocalMoistureValueTest(){
   return testMoistureGrid.computeLocalMoisture(1, 1).highestLocalMoistureValue;
 }, 2);
 
-createTest("Highest local moisture direction is calculated.", function localTotalMoistureTest(){
+createTest("Highest local moisture direction is calculated.", function highestLocalMoistureDirectionTest(){
   return testMoistureGrid.computeLocalMoisture(1, 1).highestLocalMoistureDirection;
 }, assertVectorEquals({ x: -1, y: 1 }));
