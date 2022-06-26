@@ -9,15 +9,21 @@ class Grid {
   }
 
   set(x, y, value) {
+    x = int(x);
+    y = int(y);
     this.cells[this.xyToIndex(x, y)] = value;
   }
 
   get(x, y) {
+    x = int(x);
+    y = int(y);
     return this.cells[this.xyToIndex(x, y)]
   }
 
   // x, y coordinate to 1-d value in cells.
   xyToIndex(x, y) {
+    x = int(x);
+    y = int(y);
     return x + this.width * y;
   }
 

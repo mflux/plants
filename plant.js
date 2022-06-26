@@ -48,7 +48,7 @@ class Plant {
         let nextPossibleRoot = p5.Vector.add(rootVector, dirVec);
         // print(nextPossibleRoot)
 
-        let earthType =  grids.earth.get(int(nextPossibleRoot.x), int(nextPossibleRoot.y));// == SoilType.Soft
+        let earthType =  grids.earth.get(nextPossibleRoot.x, nextPossibleRoot.y);// == SoilType.Soft
 
         // console.log()
 
@@ -64,8 +64,6 @@ class Plant {
   }
 
   newRoot(x, y) {
-    x = int(x)
-    y = int(y)
     grids.plantMatter.set(x, y, this.id);
     this.roots.push(grids.plantMatter.xyToIndex(x, y));
   }
