@@ -53,6 +53,30 @@ class Grid {
     }
   }
 
+  // For a given x y, loop over its neighbor cells (adjacent and diagonal).
+  // Cells outside bounds are not called.
+  // The cell itself is not called.
+  forEachXYNeighborValue(x, y, callback) {
+    x = int(x);
+    y = int(y);
+    for (let oy = -1; oy <= 1; oy++){
+      const cy = y + oy;
+      for (let ox = -1; ox <= 1; ox++){
+        const cx = x + ox;
+        if (cx < 0 || cy < 0) {
+          continue;
+        }
+        if (cx >= this.width || cy >= this.height) {
+          continue;
+        }
+        if (cx === x && cy === y) {
+          continue;
+        }
+        callback(cx, cy, this.get(cx, cy));
+      }
+    }
+  }
+
   // Loop over each index, returning its value as well.
   forEachIndexValue(callback) {
     for (let i = 0; i < this.area; i++){
