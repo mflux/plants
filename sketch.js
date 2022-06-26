@@ -25,6 +25,16 @@ function renderGrid(grid, colorFunc) {
   });
 }
 
+function searchForAppropriatePlantY(x, earthGrid) {
+  let y = 0;
+  let tries = 0;
+  const maxTries = 10000;
+  while (earthGrid.get(x, y) !== SoilType.Soft && tries < maxTries) {
+    y += 1;
+    tries++;
+  }
+  return y;
+}
 
 // P5.js sketch.
 
@@ -73,7 +83,9 @@ function setup() {
   });
 
   // create one plant for testing
-  PP = new Plant(int(random(width)), height - 100, grids.plantMatter, grids.earth);
+  const plantX = int(random(width));
+  const plantY = searchForAppropriatePlantY(plantX, grids.earth);
+  PP = new Plant(plantX, plantY, grids.plantMatter, grids.earth);
 }
 
 function draw() {
