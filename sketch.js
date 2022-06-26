@@ -65,6 +65,8 @@ function setup() {
 }
 
 function draw() {
+  PP.simulate();
+
   background(1, 1, 1);
 
   // Place pixels based on the grid.
@@ -92,7 +94,4 @@ function draw() {
   });
 
   updatePixels();
-
-  PP.runDraw();
-
 }

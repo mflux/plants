@@ -20,6 +20,11 @@ class Grid {
     return this.cells[this.xyToIndex(x, y)]
   }
 
+  getByIndex(index) {
+    index = int(index);
+    return this.cells[index];
+  }
+
   // x, y coordinate to 1-d value in cells.
   xyToIndex(x, y) {
     x = int(x);

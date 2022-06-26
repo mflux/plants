@@ -4,3 +4,8 @@ class PlantMatter extends Grid {
     this.fill(null);
   }
 }
+
+// Returns true if plant matter grid is occupied at the index.
+function doesPlantExistAtIndex(index) {
+  return grids.plantMatter.getByIndex(index) != null;
+}
