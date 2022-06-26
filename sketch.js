@@ -4,26 +4,8 @@ const SIM_HEIGHT = 256;
 let PP;// one plant for testing, later make an array instead
 
 // A dict of grids, each representing a grid of data.
-const grids = {
-  earth: new Earth(SIM_WIDTH, SIM_HEIGHT, SoilType.Soft),
-  moisture: new Moisture(SIM_WIDTH, SIM_HEIGHT, 0.0),
-  plantMatter: new PlantMatter(SIM_WIDTH, SIM_HEIGHT)
-};
-
-// Renders a grid with a callback on how to handle each cell->color.
-function renderGrid(grid, colorFunc) {
-  grid.forEachIndexValue((gridIndex, value) => {
-    c = colorFunc(gridIndex, value);
-    if (c === undefined) {
-      return;
-    }
-    pixelIndex = gridIndex * 4;
-    pixels[pixelIndex] = red(c);
-    pixels[pixelIndex+1] = green(c);
-    pixels[pixelIndex+2] = blue(c);
-    pixels[pixelIndex+3] = alpha(c);
-  });
-}
+// Instantiated on setup().
+const grids = {};
 
 // P5.js sketch.
 function setup() {
@@ -33,42 +15,9 @@ function setup() {
   canvas.style("transform", "scale(2) translate(25%, 25%)");
   canvas.style("image-rendering", "pixelated");
 
-  // Generate some soil.
-  const earthNoiseScale1 = 0.001;
-  const earthNoiseScale2 = 0.05;
-  grids.earth.fill(SoilType.None);
-  for (let x = 0; x < grids.earth.width; x++){
-    const v = int(noise(x * earthNoiseScale1) * grids.earth.height * 0.5);
-    const v2 = int(noise(x * earthNoiseScale2) * 20);
-    for (let y = grids.earth.height * 0.3 + v + v2; y < grids.earth.height; y++){
-      grids.earth.set(x, y, SoilType.Soft);
-    }
-  }
-
-  const rockNoiseScale = 0.02;
-  grids.earth.replaceEachXYValue((x, y, value) => {
-    if (value === SoilType.Soft) {
-      const v = noise(x * rockNoiseScale * 10, y * rockNoiseScale * 20);
-      if (v > 0.6) {
-        return SoilType.Hard;
-      }
-      return SoilType.Soft;
-    }
-    else {
-      return SoilType.None;
-    }
-  });
-
-  // Generate moisture.
-  const moistureNoiseScale = 0.003;
-  grids.moisture.replaceEachXYValue((x, y, _) => {
-    const v = noise(x * moistureNoiseScale * 10, y * moistureNoiseScale * 20);
-    const soilType = grids.earth.get(x, y);
-    if (soilType == SoilType.Soft) {
-      return v;
-    }
-    return 0;
-  });
+  grids.earth = generateEarth(SIM_WIDTH, SIM_HEIGHT);
+  grids.moisture = generateMoistureGrid(SIM_WIDTH, SIM_HEIGHT);
+  grids.plantMatter = new PlantMatter(SIM_WIDTH, SIM_HEIGHT);
 
   // create one plant for testing
   PP = spawnPlant(grids.earth);

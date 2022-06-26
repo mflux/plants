@@ -105,3 +105,18 @@ class Grid {
     this.cells = newCells;
   }
 }
+
+// Renders a grid with a callback on how to handle each cell->color.
+function renderGrid(grid, colorFunc) {
+  grid.forEachIndexValue((gridIndex, value) => {
+    c = colorFunc(gridIndex, value);
+    if (c === undefined) {
+      return;
+    }
+    pixelIndex = gridIndex * 4;
+    pixels[pixelIndex] = red(c);
+    pixels[pixelIndex+1] = green(c);
+    pixels[pixelIndex+2] = blue(c);
+    pixels[pixelIndex+3] = alpha(c);
+  });
+}
