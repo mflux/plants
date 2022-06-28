@@ -28,13 +28,6 @@ class ABrain {
             this.Sens_Bfd,
             this.Sens_Osc,
             this.Sens_LBf,
-            this.Sens_Ly,
-            this.Sens_BDx,
-            this.Sens_BDy,
-            this.Sens_BD,
-            this.Sens_Sfd,
-            this.Sens_Sl,
-            this.Sens_Sr
         ];
         
         this.source_ID = this.source_ID % this.senses.length;
@@ -101,69 +94,67 @@ class ABrain {
         }
         
         Sens_BLlr(agentObj){
-            /// sens blocked long left right
-            noStroke()
-            fill(0,0,200)
+        //     /// sens blocked long left right
+        //     noStroke()
+        //     fill(0,0,200)
             
-            let blockedL = checkPixeltoWall(agentObj.farLeft)
+        //     let blockedL = checkPixeltoWall(agentObj.farLeft)
             
-            // let gridPosL = [int((agentObj.farLeft.x/width)*100),int((agentObj.farLeft.y/height)*100)]
-            // let blockedL = worldGrid[gridPosL[0]][gridPosL[1]]
+        //     // let gridPosL = [int((agentObj.farLeft.x/width)*100),int((agentObj.farLeft.y/height)*100)]
+        //     // let blockedL = worldGrid[gridPosL[0]][gridPosL[1]]
             
-            if(agentObj.farLeft.x<0 || agentObj.farLeft.x>width){
-                blockedL = true
+        //     if(agentObj.farLeft.x<0 || agentObj.farLeft.x>width){
+        //         blockedL = true
                 
-            }
-            let blockedR = checkPixeltoWall(agentObj.farRight)
-            if(agentObj.farRight.x<0 || agentObj.farRight.x>width){
-                blockedR = true
-            }
+        //     }
+        //     let blockedR = checkPixeltoWall(agentObj.farRight)
+        //     if(agentObj.farRight.x<0 || agentObj.farRight.x>width){
+        //         blockedR = true
+        //     }
             
-            let outVal = 0;
-            if(blockedR == true && blockedL == false){
-                outVal = -1
-                if(drawBrain){
-                    rect(agentObj.farRight.x, agentObj.farRight.y, 2, 2)
-                    stroke(0,50)
-                    noFill()
-                    line(agentObj.loc.x, agentObj.loc.y, agentObj.farRight.x, agentObj.farRight.y)
-                }
+        //     let outVal = 0;
+        //     if(blockedR == true && blockedL == false){
+        //         outVal = -1
+        //         if(drawBrain){
+        //             rect(agentObj.farRight.x, agentObj.farRight.y, 2, 2)
+        //             stroke(0,50)
+        //             noFill()
+        //             line(agentObj.loc.x, agentObj.loc.y, agentObj.farRight.x, agentObj.farRight.y)
+        //         }
                 
                 
-            }else if(blockedR == false && blockedL == true){
-                outVal = 1
-                if(drawBrain){
-                    rect(agentObj.farLeft.x, agentObj.farLeft.y, 2, 2)
-                    stroke(0,50)
-                    noFill()
-                    line(agentObj.loc.x, agentObj.loc.y, agentObj.farLeft.x, agentObj.farLeft.y)
-                }
-            }
-            return(outVal)
+        //     }else if(blockedR == false && blockedL == true){
+        //         outVal = 1
+        //         if(drawBrain){
+        //             rect(agentObj.farLeft.x, agentObj.farLeft.y, 2, 2)
+        //             stroke(0,50)
+        //             noFill()
+        //             line(agentObj.loc.x, agentObj.loc.y, agentObj.farLeft.x, agentObj.farLeft.y)
+        //         }
+        //     }
+        //     return(outVal)
             
             
             
         }
         
         Sens_Bl(agentObj) {
-            // console.log("SENS : blocked left");
+            // // console.log("SENS : blocked left");
             
-            // let gridPosL = [int((agentObj.Lloc.x/width)*100),int((agentObj.Lloc.y/height)*100)]
-            // let blockedL = worldGrid[gridPosL[0]][gridPosL[1]]
+            // // let gridPosL = [int((agentObj.Lloc.x/width)*100),int((agentObj.Lloc.y/height)*100)]
+            // // let blockedL = worldGrid[gridPosL[0]][gridPosL[1]]
             
-            let blockedL = checkPixeltoWall(agentObj.Lloc)
+            // let blockedL = checkPixeltoWall(agentObj.Lloc)
             
-            if(agentObj.Lloc.x<0 || agentObj.Lloc.x>width){
-                blockedL = true
-            }
+            // if(agentObj.Lloc.x<0 || agentObj.Lloc.x>width){
+            //     blockedL = true
+            // }
             
-            
-            
-            if(blockedL){
-                return 1
-            }else{
-                return 0
-            }
+            // if(blockedL){
+            //     return 1
+            // }else{
+            //     return 0
+            // }
             
         }
         
@@ -171,20 +162,20 @@ class ABrain {
             // let gridPosR = [int((agentObj.Rloc.x/width)*100),int((agentObj.Rloc.y/height)*100)]
             // let blockedR = worldGrid[gridPosR[0]][gridPosR[1]]
             
-            let blockedR = checkPixeltoWall(agentObj.Rloc)
+            // let blockedR = checkPixeltoWall(agentObj.Rloc)
             
             
             
             
-            if(agentObj.Rloc.x<0 || agentObj.Rloc.x>width){
-                blockedR = true
-            }
+            // if(agentObj.Rloc.x<0 || agentObj.Rloc.x>width){
+            //     blockedR = true
+            // }
             
-            if(blockedR){
-                return 1
-            }else{
-                return 0
-            }
+            // if(blockedR){
+            //     return 1
+            // }else{
+            //     return 0
+            // }
             
         }
         
@@ -211,28 +202,28 @@ class ABrain {
             //   console.log(worldGrid[gridPos[0]])
             //   console.log(worldGrid[gridPos[0]][gridPos[1]])
             // }
+            //--------------------------------------
+            // let blockedFwrd = checkPixeltoWall(agentObj.farForward)
             
-            let blockedFwrd = checkPixeltoWall(agentObj.farForward)
+            // // let pxlFwrd = GetPixel(agentObj.floc.x, agentObj.floc.y, wallLayer)[0];
             
-            // let pxlFwrd = GetPixel(agentObj.floc.x, agentObj.floc.y, wallLayer)[0];
-            
-            if (blockedFwrd==true) {
+            // if (blockedFwrd==true) {
                 
                 
-                if(drawBrain){
-                    fill(200,0,0)
-                    noStroke()
-                    rect(agentObj.farForward.x, agentObj.farForward.y, 2, 2) // far forward loc
-                    stroke(0,50)
-                    noFill()
-                    line(agentObj.loc.x, agentObj.loc.y, agentObj.farForward.x, agentObj.farForward.y)
+            //     if(drawBrain){
+            //         fill(200,0,0)
+            //         noStroke()
+            //         rect(agentObj.farForward.x, agentObj.farForward.y, 2, 2) // far forward loc
+            //         stroke(0,50)
+            //         noFill()
+            //         line(agentObj.loc.x, agentObj.loc.y, agentObj.farForward.x, agentObj.farForward.y)
                     
-                }
+            //     }
                 
                 
-                return 1
-            }
-            return 0;
+            //     return 1
+            // }
+            // return 0;
             
         }
         
@@ -252,22 +243,22 @@ class ABrain {
             // // let pxlFwrd = GetPixel(agentObj.floc.x, agentObj.floc.y, wallLayer)[0];
             // let blockedFwrd = worldGrid[gridPos[0]][gridPos[1]]
             
-            let blockedFwrd = checkPixeltoWall(agentObj.floc)
+            // let blockedFwrd = checkPixeltoWall(agentObj.floc)
             
             
             
-            if( agentObj.floc.x < 0 || agentObj.floc.x > width){
-                blockedFwrd = true
-            }
+            // if( agentObj.floc.x < 0 || agentObj.floc.x > width){
+            //     blockedFwrd = true
+            // }
             
-            if( agentObj.floc.y < 0 || agentObj.floc.y > height){
-                blockedFwrd = true
-            }
+            // if( agentObj.floc.y < 0 || agentObj.floc.y > height){
+            //     blockedFwrd = true
+            // }
             
-            if (blockedFwrd==true) {
-                return 1
-            }
-            return 0;
+            // if (blockedFwrd==true) {
+            //     return 1
+            // }
+            // return 0;
             // blockage forward
         }
         Sens_Osc(agentObj) {
@@ -293,12 +284,6 @@ class ABrain {
             return map(distN, 0, width, 0, 1);
             
         }
-        Sens_Ly(agentObj) {
-            // console.log("SENS : north south location");
-            //north south world loc
-            return map(agentObj.loc.y, 0, height, -1, 1);
-        }
-
         Act_OSC(trigger, agentObj) {
             // console.log("ACT : set osculator");
             // set osculator
@@ -311,10 +296,18 @@ class ABrain {
         }
         Act_SSpread(trigger, agentObj){
             //set spread ammount
+            
         }
         
         Act_SRoot(trigger, agentObj){
-            agentObj.rootPick = map(trigger, -1,1,0,agentObj.rootPick.length) // sets the root to look at. 
+            let maxRootIdx = agentObj.roots.length
+            let minRootIdx = maxRootIdx - agentObj.rootRange
+            agentObj.rootPick = int(map(trigger, -1,1,minRootIdx,maxRootIdx)) // sets the root to look at. 
+            print(agentObj.rootPick)
+        }
+
+        Act_GRoot(trigger, agentObj){
+            agentObj.attemptToGrow();
         }
         
 

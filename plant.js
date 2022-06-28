@@ -37,13 +37,14 @@ class Plant {
   }
 
   simulate() {
-    print(this.energy)
-    this.energy += 1;
+    this.runBrain();
+  //   print(this.energy)
+  //   this.energy += 1;
 
-    if (this.energy > 1) {
-      this.energy -= 1;
-      this.attemptToGrow();
-    }
+  //   if (this.energy > 1) {
+  //     this.energy -= 1;
+  //     this.attemptToGrow();
+  //   }
   }
 
   runBrain() {
@@ -70,14 +71,14 @@ class Plant {
         const rootRange = constrain(this.roots.length - this.pickRootRange, 0, this.roots.length)
 
         // Pick only from the past 50 root pixels.
-        let rootPick = int(random(rootRange, this.roots.length));
+        // this.rootPick = int(random(this.rootRange, this.roots.length));
 
-        const rootVector = this.plantMatterGrid.indexToVector(this.roots[rootPick]);
+        const rootVector = this.plantMatterGrid.indexToVector(this.roots[this.rootPick]);
         let nextPossibleRoot = p5.Vector.add(rootVector, dirVec);
 
 
         let earthType =  this.earthGrid.get(nextPossibleRoot.x, nextPossibleRoot.y);
-        if (doesPlantExistAtIndex(this.roots[rootPick]) && earthType == SoilType.Soft) {
+        if (doesPlantExistAtIndex(this.roots[this.rootPick]) && earthType == SoilType.Soft) {
           foundRoot = true;
            this.makeNewRoot(rootVector, nextPossibleRoot);
           break;
