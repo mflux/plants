@@ -20,15 +20,17 @@ class ABrain {
         
         
         this.senses = [
+            this.Sens_RootMoisture,
             this.Sens_Rnd,
-            this.Sens_Bl,
-            this.Sens_Br,
-            this.Sens_BLfd,
-            this.Sens_BLlr,
             this.Sens_Bfd,
             this.Sens_Osc,
             this.Sens_LBf,
         ];
+
+        // this.Sens_Bl,
+        // this.Sens_Br,
+        // this.Sens_BLfd,
+        // this.Sens_BLlr,
         
         this.source_ID = this.source_ID % this.senses.length;
         
@@ -82,6 +84,15 @@ class ABrain {
         }
         
     
+        Sens_RootMoisture(agentObj){
+            console.log("moisture search")
+            let rootPicVec = grids.moisture.indexToVector(agentObj.roots[agentObj.rootPick])
+            // console.log(rootPicVec)
+            let foundMoisture = grids.moisture.computeLocalMoisture(rootPicVec.x, rootPicVec.y).totalLocalMoisture;
+            console.log(foundMoisture)
+            return foundMoisture
+        }
+
         Sens_Age(agentObj) {
             // console.log("SENS : age");
             return map(agentObj.age, 0, maxCycles, 0, 1);
@@ -300,15 +311,18 @@ class ABrain {
         }
         
         Act_SRoot(trigger, agentObj){
+            console.log(trigger)
             let maxRootIdx = agentObj.roots.length
             let minRootIdx = maxRootIdx - agentObj.rootRange
             agentObj.rootPick = int(map(trigger, -1,1,minRootIdx,maxRootIdx)) // sets the root to look at. 
-            print(agentObj.rootPick)
+            // console.log(agentObj.rootPick);
         }
 
         Act_GRoot(trigger, agentObj){
+
             agentObj.attemptToGrow();
-        }
+        
+         }
         
 
 

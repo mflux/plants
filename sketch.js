@@ -70,7 +70,7 @@ function MuttateGene(GeneIn) {
 function makeRandomGenome(){
 	let Genome = []
 
-	numberOfGenes = int(random(5,32));
+	numberOfGenes = int(random(12,64));
 
 	for (let b = 0; b < numberOfGenes; b++) {
 		let digit = random(80000, 50000000);

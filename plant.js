@@ -9,6 +9,7 @@ class Plant {
 
     this.makeNewRoot(createVector(initialPlantX, initialPlantY),createVector(initialPlantX, initialPlantY+1));
 
+    console.log(genomeSequenceIn)
 
     this.health = 100;
     this.internalClock = 0;
