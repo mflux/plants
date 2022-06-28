@@ -1,7 +1,8 @@
 class Plant {
-  constructor(initialPlantX, initialPlantY, plantMatterGrid, earthGrid, genomeSequenceIn) {
+  constructor(initialPlantX, initialPlantY, plantMatterGrid, earthGrid, rootAngles, genomeSequenceIn) {
     this.plantMatterGrid = plantMatterGrid;
     this.earthGrid = earthGrid;
+    this.rootAngles = rootAngles;
 
     this.roots = [];
 
@@ -24,7 +25,7 @@ class Plant {
 
 
     this.minGrowDistance = 1;
-    this.maxGrowDistance = 15;
+    this.maxGrowDistance = 1;
 
     this.growDistance = 10;
     this.growDirection = 0;
@@ -95,6 +96,7 @@ class Plant {
    makeNewRoot(fromPos,toPos) {
 
     let d =fromPos.dist( toPos);
+    let rootAngleFrom = fromPos.angleBetween(toPos);
 
     for (let index = 0; index < d; index++) {
         let inc = index/d;
@@ -103,6 +105,7 @@ class Plant {
         let earthType =  this.earthGrid.get(midPos.x, midPos.y);
         if(earthType == SoilType.Soft) {
             this.plantMatterGrid.set(midPos.x, midPos.y, this);
+            this.rootAngles.set(midPos.x, midPos.y,rootAngleFrom)
             this.roots.push(this.plantMatterGrid.xyToIndex(midPos.x, midPos.y));
         }else{
             break;// soil is no longer soft in this direction, so stop root growth
@@ -124,8 +127,9 @@ function searchForAppropriatePlantY(x, earthGrid) {
 }
 
 // Spawns a plant, given an earth grid.
-function spawnPlant(earthGrid, genomeSequence) {
+function spawnPlant(earthGrid,rootAngles, genomeSequence) {
+  
   const plantX = int(random(earthGrid.width));
   const plantY = searchForAppropriatePlantY(plantX, earthGrid);
-  return new Plant(plantX, plantY, grids.plantMatter, earthGrid, genomeSequence);
+  return new Plant(plantX, plantY, grids.plantMatter, earthGrid, rootAngles, genomeSequence);
 }
