@@ -26,7 +26,7 @@ function generateEarth(width, height) {
     }
   }
 
-  const rockNoiseScale = 0.02;
+  const rockNoiseScale = 0.005;
   earthGrid.replaceEachXYValue((x, y, value) => {
     if (value === SoilType.Soft) {
       const v = noise(x * rockNoiseScale * 10, y * rockNoiseScale * 20);
