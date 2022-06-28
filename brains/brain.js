@@ -341,7 +341,7 @@ class ABrain {
 			let maxRootIdx = agentObj.roots.length
 			let minRootIdx = maxRootIdx - agentObj.rootRange
 			agentObj.rootPick = int(map(trigger, -1,1,minRootIdx,maxRootIdx)) // sets the root to look at. 
-			console.log("set root pick to " + agentObj.rootPick);
+			// console.log("set root pick to " + agentObj.rootPick);
 		}
 		
 		Act_SetGrowAmmt(trigger, agentObj){
