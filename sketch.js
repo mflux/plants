@@ -22,7 +22,6 @@ function setup() {
 
   // create one plant for testing
   let GSEQ = makeRandomGenome();
-  print(GSEQ)
   PP = spawnPlant(grids.earth, GSEQ);
 }
 
@@ -79,4 +78,18 @@ function makeRandomGenome(){
 	}
 	
 	return Genome
+}
+
+function hex2bin(hex) {
+  let val = parseInt(hex, 16);
+  // console.log(val)
+  let binStr = val.toString(2);
+  while (binStr.length < 32) {
+    binStr = "0" + binStr;
+  }
+  return binStr;
+}
+
+function int2hex(bin) {
+  return bin.toString(16);
 }

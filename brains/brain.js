@@ -276,24 +276,7 @@ class ABrain {
             agentObj.internalClock += agentObj.clockSpeed;
             return sin(this.internalClock);
         }
-        Sens_Plr(agentObj) {
-            // console.log("SENS : pop left right");
-            // population left-right
-        }
-        Sens_Pop(agentObj) {
-            // console.log("SENS : pop density nearby");
-            return 0;
-            // population density in near vacinity
-        }
-        Sens_Pfd(agentObj) {
-            // console.log("SENS : pop gradient forward");
-            return 0;
-            // population gradient forward
-        }
-        Sens_LPf(agentObj) {
-            // console.log("SENS : pop long-range forward");
-            // population long-range forward
-        }
+       
         Sens_LMy(agentObj) {
             // console.log("SENS : last y movement");
             //last movement y
@@ -329,6 +312,11 @@ class ABrain {
         Act_SSpread(trigger, agentObj){
             //set spread ammount
         }
+        
+        Act_SRoot(trigger, agentObj){
+            agentObj.rootPick = map(trigger, -1,1,0,agentObj.rootPick.length) // sets the root to look at. 
+        }
+        
 
 
     }

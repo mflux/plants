@@ -27,6 +27,8 @@ class Plant {
     this.age = 0;
     this.alive = true;
 
+    this.rootPick = 0;
+
     for (var intI = 0; intI < genomeSequenceIn.length; intI++) {
         let synapse = new ABrain(genomeSequenceIn[intI]);
         this.brains.push(synapse);
@@ -35,10 +37,11 @@ class Plant {
   }
 
   simulate() {
-    this.growth += 1;
+    print(this.energy)
+    this.energy += 1;
 
-    if (this.growth > 1) {
-      this.growth -= 1;
+    if (this.energy > 1) {
+      this.energy -= 1;
       this.attemptToGrow();
     }
   }
