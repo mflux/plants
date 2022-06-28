@@ -1,7 +1,8 @@
 class Plant {
-  constructor(initialPlantX, initialPlantY, plantMatterGrid, earthGrid, genomeSequenceIn) {
+  constructor(initialPlantX, initialPlantY, plantMatterGrid, earthGrid, rootAngles, genomeSequenceIn) {
     this.plantMatterGrid = plantMatterGrid;
     this.earthGrid = earthGrid;
+    this.rootAngles = rootAngles;
 
     this.roots = [];
 
@@ -24,9 +25,10 @@ class Plant {
 
 
     this.minGrowDistance = 1;
-    this.maxGrowDistance = 15;
+    this.maxGrowDistance = 1;
 
     this.growDistance = 10;
+    this.growDirection = 0;
 
 
     this.pickRootRange = 50;
@@ -37,9 +39,9 @@ class Plant {
     this.rootPick = 0;
 
     for (var intI = 0; intI < genomeSequenceIn.length; intI++) {
-        let synapse = new ABrain(genomeSequenceIn[intI]);
-        this.brains.push(synapse);
-      }
+      let synapse = new ABrain(genomeSequenceIn[intI]);
+      this.brains.push(synapse);
+    }
 
   }
 
@@ -68,7 +70,6 @@ class Plant {
 
     for (var i = 0; i < 1000; i++) {
       if(foundRoot == false){
-
         const spreadAngle = this.spreadAngle;
         const myDegrees = map(random(), 0, 1, 90 + spreadAngle, 90 - spreadAngle);
         // const moveAmount = int(random(this.minGrowDistance, this.maxGrowDistance));
@@ -76,41 +77,39 @@ class Plant {
         const dirVec = p5.Vector.fromAngle(radians(myDegrees), this.growDistance);
         dirVec.x = int(dirVec.x)
         dirVec.y = int(dirVec.y)
-
         const rootRange = constrain(this.roots.length - this.pickRootRange, 0, this.roots.length)
-
         // Pick only from the past 50 root pixels.
         // this.rootPick = int(random(this.rootRange, this.roots.length));
-
         const rootVector = this.plantMatterGrid.indexToVector(this.roots[this.rootPick]);
         let nextPossibleRoot = p5.Vector.add(rootVector, dirVec);
 
-
         let earthType =  this.earthGrid.get(nextPossibleRoot.x, nextPossibleRoot.y);
-        if (doesPlantExistAtIndex(this.roots[this.rootPick]) && earthType == SoilType.Soft) {
+        if (doesPlantExistAtIndex(this.roots[this.rootPick]) && earthType === SoilType.Soft) {
           foundRoot = true;
-           this.makeNewRoot(rootVector, nextPossibleRoot);
+          this.makeNewRoot(rootVector, nextPossibleRoot);
           break;
         }
       }
     }
   }
 
-   makeNewRoot(fromPos,toPos) {
+  makeNewRoot(fromPos,toPos) {
 
-    let d =fromPos.dist( toPos);
+    let d = fromPos.dist(toPos);
+    let rootAngleFrom = fromPos.angleBetween(toPos);
 
     for (let index = 0; index < d; index++) {
-        let inc = index/d;
-        let midPos = p5.Vector.lerp(fromPos, toPos, inc);
+      let inc = index/d;
+      let midPos = p5.Vector.lerp(fromPos, toPos, inc);
 
-        let earthType =  this.earthGrid.get(midPos.x, midPos.y);
-        if(earthType == SoilType.Soft) {
-            this.plantMatterGrid.set(midPos.x, midPos.y, this);
-            this.roots.push(this.plantMatterGrid.xyToIndex(midPos.x, midPos.y));
-        }else{
-            break;// soil is no longer soft in this direction, so stop root growth
-        }
+      let earthType = this.earthGrid.get(midPos.x, midPos.y);
+      if(earthType == SoilType.Soft) {
+        this.plantMatterGrid.set(midPos.x, midPos.y, this);
+        this.rootAngles.set(midPos.x, midPos.y,rootAngleFrom)
+        this.roots.push(this.plantMatterGrid.xyToIndex(midPos.x, midPos.y));
+      }else {
+        break;// soil is no longer soft in this direction, so stop root growth
+      }
     }
   }
 }
@@ -128,10 +127,10 @@ function searchForAppropriatePlantY(x, earthGrid) {
 }
 
 // Spawns a plant, given an earth grid.
-function spawnPlant(earthGrid, genomeSequence) {
+function spawnPlant(earthGrid,rootAngles, genomeSequence) {
   const plantX = int(random(earthGrid.width));
   const plantY = searchForAppropriatePlantY(plantX, earthGrid);
-  return new Plant(plantX, plantY, grids.plantMatter, earthGrid, genomeSequence);
+  return new Plant(plantX, plantY, grids.plantMatter, earthGrid, rootAngles, genomeSequence);
 }
 
 function computeNormalizedGrowthPotential(index, earthGrid, plantMatterGrid) {

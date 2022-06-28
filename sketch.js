@@ -19,10 +19,11 @@ function setup() {
   grids.earth = generateEarth(SIM_WIDTH, SIM_HEIGHT);
   grids.moisture = generateMoistureGrid(SIM_WIDTH, SIM_HEIGHT);
   grids.plantMatter = new PlantMatter(SIM_WIDTH, SIM_HEIGHT);
+  grids.rootAngles = new ValueGrid(SIM_WIDTH,SIM_HEIGHT);
 
   // create one plant for testing
   let GSEQ = makeRandomGenome();
-  PP = spawnPlant(grids.earth, GSEQ);
+  PP = spawnPlant(grids.earth,grids.rootAngles, GSEQ);
 }
 
 function draw() {
