@@ -103,7 +103,7 @@ class Plant {
     for (let index = 0; index < d; index++) {
         let inc = index/d;
         let midPos = p5.Vector.lerp(fromPos, toPos, inc);
-       
+
         let earthType =  this.earthGrid.get(midPos.x, midPos.y);
         if(earthType == SoilType.Soft) {
             this.plantMatterGrid.set(midPos.x, midPos.y, this);
@@ -132,4 +132,22 @@ function spawnPlant(earthGrid, genomeSequence) {
   const plantX = int(random(earthGrid.width));
   const plantY = searchForAppropriatePlantY(plantX, earthGrid);
   return new Plant(plantX, plantY, grids.plantMatter, earthGrid, genomeSequence);
+}
+
+function computeNormalizedGrowthPotential(index, earthGrid, plantMatterGrid) {
+  const [x, y] = earthGrid.indexToXY(index);
+  let value = 0;
+  earthGrid.forEachXYNeighborValue(x, y, (nx, ny, soilType) => {
+    if (soilType === SoilType.Soft) {
+      value += 1;
+    }
+  });
+
+  plantMatterGrid.forEachXYNeighborValue(x, y, (nx, ny, plantMatter) => {
+    if (plantMatter === null) {
+      value += 1;
+    }
+  });
+
+  return value / 16.0;
 }
