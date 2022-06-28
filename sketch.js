@@ -26,7 +26,8 @@ function setup() {
 }
 
 function draw() {
-  PP.simulate();
+  // PP.simulate();
+  PP.runBrain();
 
   background(1, 1, 1);
 

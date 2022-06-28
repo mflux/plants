@@ -20,11 +20,11 @@ class ABrain {
         
         
         this.senses = [
-            this.Sens_RootMoisture,
+            this.Sens_RootMoistureLocal,
+            this.Sens_RootMoistureDir,
             this.Sens_Rnd,
-            this.Sens_Bfd,
             this.Sens_Osc,
-            this.Sens_LBf,
+            this.Sens_Energy
         ];
 
         // this.Sens_Bl,
@@ -84,13 +84,24 @@ class ABrain {
         }
         
     
-        Sens_RootMoisture(agentObj){
-            console.log("moisture search")
+        Sens_RootMoistureLocal(agentObj){
+            
             let rootPicVec = grids.moisture.indexToVector(agentObj.roots[agentObj.rootPick])
             // console.log(rootPicVec)
             let foundMoisture = grids.moisture.computeLocalMoisture(rootPicVec.x, rootPicVec.y).totalLocalMoisture;
-            console.log(foundMoisture)
-            return foundMoisture
+            // console.log(foundMoisture)
+            console.log("Sens_local moisture : " + foundMoisture)
+            return map(foundMoisture, 0,10, -1,1)
+        }
+
+        Sens_RootMoistureDir(agentObj){
+            
+            let rootPicVec = grids.moisture.indexToVector(agentObj.roots[agentObj.rootPick])
+            // console.log(rootPicVec)
+            let foundMoisture = grids.moisture.computeLocalMoisture(rootPicVec.x, rootPicVec.y).highestLocalMoistureDirection;
+            // console.log(foundMoisture.heading())
+            console.log("Sens_local moisture : " + foundMoisture.heading())
+            return map(foundMoisture.heading(), -3.1415, 3.1415, -1,0);
         }
 
         Sens_Age(agentObj) {
@@ -272,6 +283,11 @@ class ABrain {
             // return 0;
             // blockage forward
         }
+
+        Sens_Energy(agentObj){
+            return map( agentObj.energy, 0,100, 0, 1);
+        }
+
         Sens_Osc(agentObj) {
             // console.log("SENS : osculator");
             // oscillator
@@ -284,10 +300,10 @@ class ABrain {
             //last movement y
         }
         
-        Sens_LBf(agentObj) {
-            // console.log("SENS : last x movement");
-            //last movement x
-        }
+        // Sens_LBf(agentObj) {
+        //     // console.log("SENS : last x movement");
+        //     //last movement x
+        // }
         
         Sens_DCtr(agentObj){
             // distance from end
@@ -311,12 +327,18 @@ class ABrain {
         }
         
         Act_SRoot(trigger, agentObj){
-            console.log(trigger)
+            // console.log(trigger)
             let maxRootIdx = agentObj.roots.length
             let minRootIdx = maxRootIdx - agentObj.rootRange
             agentObj.rootPick = int(map(trigger, -1,1,minRootIdx,maxRootIdx)) // sets the root to look at. 
-            // console.log(agentObj.rootPick);
+            console.log("set root pick to " + agentObj.rootPick);
         }
+
+        Act_SetGrowAmmt(trigger, agentObj){
+
+            agentObj.growDistance = int(map(trigger, -1,1, agentObj.minGrowDistance,agentObj.maxGrowDistance)) // sets the root to look at. 
+        
+         }
 
         Act_GRoot(trigger, agentObj){
 

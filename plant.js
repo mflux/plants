@@ -19,10 +19,16 @@ class Plant {
     this.brains = [];
     this.InternalNeurons = [0, 0, 0];
 
-    this.energy = 0;
+    this.energy = 10;
     this.spreadAngle = 100;
+
+
     this.minGrowDistance = 1;
     this.maxGrowDistance = 15;
+
+    this.growDistance = 10;
+
+
     this.pickRootRange = 50;
 
     this.age = 0;
@@ -38,14 +44,14 @@ class Plant {
   }
 
   simulate() {
-    this.runBrain();
-  //   print(this.energy)
-  //   this.energy += 1;
 
-  //   if (this.energy > 1) {
-  //     this.energy -= 1;
-  //     this.attemptToGrow();
-  //   }
+    print(this.energy)
+    this.energy += 1;
+
+    if (this.energy > 1) {
+      this.energy -= 1;
+      this.attemptToGrow();
+    }
   }
 
   runBrain() {
@@ -53,6 +59,7 @@ class Plant {
       this.brains[s].RunSynapse(this);
     }
     this.age += 1;
+    // this.energy-=.1
   }
 
 
@@ -64,8 +71,9 @@ class Plant {
 
         const spreadAngle = this.spreadAngle;
         const myDegrees = map(random(), 0, 1, 90 + spreadAngle, 90 - spreadAngle);
-        const moveAmount = int(random(this.minGrowDistance, this.maxGrowDistance));
-        const dirVec = p5.Vector.fromAngle(radians(myDegrees), moveAmount);
+        // const moveAmount = int(random(this.minGrowDistance, this.maxGrowDistance));
+        // const moveAmount
+        const dirVec = p5.Vector.fromAngle(radians(myDegrees), this.growDistance);
         dirVec.x = int(dirVec.x)
         dirVec.y = int(dirVec.y)
 
