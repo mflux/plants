@@ -1,5 +1,6 @@
 const SIM_WIDTH = 256;
 const SIM_HEIGHT = 256;
+const maxCycles = 1000;
 
 let PP;// one plant for testing, later make an array instead
 
@@ -20,7 +21,9 @@ function setup() {
   grids.plantMatter = new PlantMatter(SIM_WIDTH, SIM_HEIGHT);
 
   // create one plant for testing
-  PP = spawnPlant(grids.earth);
+  let GSEQ = makeRandomGenome();
+  print(GSEQ)
+  PP = spawnPlant(grids.earth, GSEQ);
 }
 
 function draw() {
@@ -53,4 +56,27 @@ function draw() {
   });
 
   updatePixels();
+}
+
+function MuttateGene(GeneIn) {
+	let randPick = int(random(GeneIn.length));
+	let digit = random(80000, 5000000);
+	let newHex = hex(digit,8).replace('.', '0')
+	GeneIn[randPick] = newHex;
+	let GeneOut = GeneIn
+	
+	return GeneOut;
+}
+
+function makeRandomGenome(){
+	let Genome = []
+
+	numberOfGenes = int(random(5,32));
+
+	for (let b = 0; b < numberOfGenes; b++) {
+		let digit = random(80000, 50000000);
+		Genome.push(hex(digit, 8).replace('.', '0'));
+	}
+	
+	return Genome
 }

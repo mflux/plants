@@ -1,5 +1,5 @@
 class Plant {
-  constructor(initialPlantX, initialPlantY, plantMatterGrid, earthGrid) {
+  constructor(initialPlantX, initialPlantY, plantMatterGrid, earthGrid, genomeSequenceIn) {
     this.plantMatterGrid = plantMatterGrid;
     this.earthGrid = earthGrid;
 
@@ -11,11 +11,27 @@ class Plant {
 
 
     this.health = 100;
-    this.growth = 0;
-    this.spreadAngle = 60;
+    this.internalClock = 0;
+    this.clockSpeed = 0.1;
+    this.responsiveness = 1;
+
+    this.brains = [];
+    this.InternalNeurons = [0, 0, 0];
+
+    this.energy = 0;
+    this.spreadAngle = 100;
     this.minGrowDistance = 1;
     this.maxGrowDistance = 15;
     this.pickRootRange = 50;
+
+    this.age = 0;
+    this.alive = true;
+
+    for (var intI = 0; intI < genomeSequenceIn.length; intI++) {
+        let synapse = new ABrain(genomeSequenceIn[intI]);
+        this.brains.push(synapse);
+      }
+
   }
 
   simulate() {
@@ -26,6 +42,14 @@ class Plant {
       this.attemptToGrow();
     }
   }
+
+  runBrain() {
+    for (let s in this.brains) {
+      this.brains[s].RunSynapse(this);
+    }
+    this.age += 1;
+  }
+
 
   attemptToGrow() {
     let foundRoot = false;
@@ -47,6 +71,8 @@ class Plant {
 
         const rootVector = this.plantMatterGrid.indexToVector(this.roots[rootPick]);
         let nextPossibleRoot = p5.Vector.add(rootVector, dirVec);
+
+
         let earthType =  this.earthGrid.get(nextPossibleRoot.x, nextPossibleRoot.y);
         if (doesPlantExistAtIndex(this.roots[rootPick]) && earthType == SoilType.Soft) {
           foundRoot = true;
@@ -64,8 +90,14 @@ class Plant {
     for (let index = 0; index < d; index++) {
         let inc = index/d;
         let midPos = p5.Vector.lerp(fromPos, toPos, inc);
-        this.plantMatterGrid.set(midPos.x, midPos.y, this);
-        this.roots.push(this.plantMatterGrid.xyToIndex(midPos.x, midPos.y));
+       
+        let earthType =  this.earthGrid.get(midPos.x, midPos.y);
+        if(earthType == SoilType.Soft) {
+            this.plantMatterGrid.set(midPos.x, midPos.y, this);
+            this.roots.push(this.plantMatterGrid.xyToIndex(midPos.x, midPos.y));
+        }else{
+            break;// soil is no longer soft in this direction, so stop root growth
+        }
     }
   }
 }
@@ -83,8 +115,8 @@ function searchForAppropriatePlantY(x, earthGrid) {
 }
 
 // Spawns a plant, given an earth grid.
-function spawnPlant(earthGrid) {
+function spawnPlant(earthGrid, genomeSequence) {
   const plantX = int(random(earthGrid.width));
   const plantY = searchForAppropriatePlantY(plantX, earthGrid);
-  return new Plant(plantX, plantY, grids.plantMatter, earthGrid);
+  return new Plant(plantX, plantY, grids.plantMatter, earthGrid, genomeSequence);
 }
