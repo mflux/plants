@@ -27,6 +27,7 @@ class Plant {
     this.maxGrowDistance = 15;
 
     this.growDistance = 10;
+    this.growDirection = 0;
 
 
     this.pickRootRange = 50;
@@ -68,7 +69,6 @@ class Plant {
 
     for (var i = 0; i < 1000; i++) {
       if(foundRoot == false){
-
         const spreadAngle = this.spreadAngle;
         const myDegrees = map(random(), 0, 1, 90 + spreadAngle, 90 - spreadAngle);
         // const moveAmount = int(random(this.minGrowDistance, this.maxGrowDistance));
@@ -76,15 +76,11 @@ class Plant {
         const dirVec = p5.Vector.fromAngle(radians(myDegrees), this.growDistance);
         dirVec.x = int(dirVec.x)
         dirVec.y = int(dirVec.y)
-
         const rootRange = constrain(this.roots.length - this.pickRootRange, 0, this.roots.length)
-
         // Pick only from the past 50 root pixels.
         // this.rootPick = int(random(this.rootRange, this.roots.length));
-
         const rootVector = this.plantMatterGrid.indexToVector(this.roots[this.rootPick]);
         let nextPossibleRoot = p5.Vector.add(rootVector, dirVec);
-
 
         let earthType =  this.earthGrid.get(nextPossibleRoot.x, nextPossibleRoot.y);
         if (doesPlantExistAtIndex(this.roots[this.rootPick]) && earthType == SoilType.Soft) {
