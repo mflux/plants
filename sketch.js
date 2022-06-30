@@ -19,8 +19,11 @@ var debugBrain = false;
 // Instantiated on setup().
 const grids = {};
 
+let debugText;
+
 // P5.js sketch.
 function setup() {
+  frameRate(10000);
   if(debugBrain){
     frameRate(3);
   }
@@ -33,7 +36,13 @@ function setup() {
 
   remakeGrids();
   restartEvolution();
+
+  debugText = createP('Nothing');
+  debugText.style('font-size', '16px');
+  debugText.position(10, 10);
 }
+
+let lastStepTime = 0;
 
 function draw() {
   stepEvolution();
@@ -64,10 +73,17 @@ function draw() {
   });
 
   updatePixels();
-  textSize(10);
-  text('Root Pick : ' + PP.rootPick, 20, 20);
-  text('plant age : ' + PP.age, 20, 40);
-  text('internal neurons : ' + PP.InternalNeurons, 20, 60);
-  text('roots : ' + PP.roots.length, 20, 80);
 
+  timeDelta = millis() - lastStepTime;
+  lastStepTime = millis();
+
+  debugText.html(`
+  <pre>
+  Frame time:       ${timeDelta}
+  Reward (roots):   ${PP.roots.length}
+  Root pick:        ${PP.rootPick}
+  Plant age:        ${PP.age}
+  Internal neurons: ${PP.InternalNeurons}
+  </pre>
+  `)
 }
