@@ -85,5 +85,14 @@ function draw() {
   Plant age:        ${PP.age}
   Internal neurons: ${PP.InternalNeurons}
   </pre>
-  `)
+  `);
+}
+
+function brrrrrrr() {
+  n = 100000;
+  console.time('sim')
+  for (let i = 0; i < n; i++){
+    stepEvolution();
+  }
+  console.timeEnd('sim');
 }

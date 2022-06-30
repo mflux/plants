@@ -62,9 +62,9 @@ class Plant {
   attemptToGrow() {
     const spreadAngle = this.spreadAngle;
     const myDegrees = map(random(), 0, 1, 90 + spreadAngle, 90 - spreadAngle);
-    const dirVec = p5.Vector.fromAngle(radians(myDegrees), 5);// this.growDistance);
-    dirVec.x = int(dirVec.x)
-    dirVec.y = int(dirVec.y)
+    const dirVec = p5.Vector.fromAngle(radians(myDegrees), 1);
+    dirVec.x = round(dirVec.x)
+    dirVec.y = round(dirVec.y)
     const rootVector = this.plantMatterGrid.indexToVector(this.roots[this.rootPick]);
     const nextPossibleRoot = p5.Vector.add(rootVector, dirVec);
     const nextPossibleIndex = this.plantMatterGrid.xyToIndex(nextPossibleRoot.x, nextPossibleRoot.y);
@@ -74,24 +74,12 @@ class Plant {
     }
   }
 
-  makeNewRoot(fromPos,toPos) {
-
-    let d = fromPos.dist(toPos);
+  makeNewRoot(fromPos, toPos) {
     let rootAngleFrom = fromPos.angleBetween(toPos);
+    this.plantMatterGrid.set(toPos.x, toPos.y, this);
+    this.rootAngles.set(toPos.x, toPos.y ,rootAngleFrom)
+    this.roots.push(this.plantMatterGrid.xyToIndex(toPos.x, toPos.y));
 
-    for (let index = 0; index < d; index++) {
-      let inc = index/d;
-      let midPos = p5.Vector.lerp(fromPos, toPos, inc);
-
-      let earthType = this.earthGrid.get(midPos.x, midPos.y);
-      if(earthType == SoilType.Soft) {
-        this.plantMatterGrid.set(midPos.x, midPos.y, this);
-        this.rootAngles.set(midPos.x, midPos.y,rootAngleFrom)
-        this.roots.push(this.plantMatterGrid.xyToIndex(midPos.x, midPos.y));
-      }else {
-        break;// soil is no longer soft in this direction, so stop root growth
-      }
-    }
   }
 
   // Returns true if the plant has grown at all. Else returns false.
