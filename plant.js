@@ -32,6 +32,7 @@ class Plant {
 
 
     this.pickRootRange = 50;
+    this.rootRange = 10;
 
     this.age = 0;
     this.alive = true;
@@ -77,7 +78,7 @@ class Plant {
         const dirVec = p5.Vector.fromAngle(radians(myDegrees), this.growDistance);
         dirVec.x = int(dirVec.x)
         dirVec.y = int(dirVec.y)
-        const rootRange = constrain(this.roots.length - this.pickRootRange, 0, this.roots.length)
+        this.rootRange = constrain(this.roots.length - this.pickRootRange, 0, this.roots.length)
         // Pick only from the past 50 root pixels.
         // this.rootPick = int(random(this.rootRange, this.roots.length));
         const rootVector = this.plantMatterGrid.indexToVector(this.roots[this.rootPick]);

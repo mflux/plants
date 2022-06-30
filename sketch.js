@@ -10,6 +10,7 @@ const grids = {};
 
 // P5.js sketch.
 function setup() {
+  frameRate(3);
   pixelDensity(1);
   noSmooth();
   const canvas = createCanvas(SIM_WIDTH, SIM_HEIGHT);
@@ -30,7 +31,12 @@ function draw() {
   // PP.simulate();
   PP.runBrain();
 
+  fill(0)
+
+
   background(1, 1, 1);
+
+
 
   // Place pixels based on the grid.
   loadPixels();
@@ -57,6 +63,10 @@ function draw() {
   });
 
   updatePixels();
+  textSize(12);
+  text('Root Pick : ' + PP.rootPick, 20, 20);
+  text('plant age : ' + PP.age, 20, 40);
+  
 }
 
 function MuttateGene(GeneIn) {

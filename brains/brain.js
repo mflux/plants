@@ -1,4 +1,5 @@
 var drawBrain = false;
+var debugBrain = true;
 class ABrain {
 	constructor(brainGenes) {
 		this.geneSet = brainGenes;
@@ -25,7 +26,8 @@ class ABrain {
 			this.Sens_Random,
 			this.Sens_Osc,
 			this.Sens_Energy,
-			this.Sens_MoveDirection
+			this.Sens_MoveDirection,
+			this.Sens_GrowthPotential
 		];
 		
 		// this.Sens_Bl,
@@ -54,6 +56,9 @@ class ABrain {
 	}
 	
 	RunSynapse(agentObj) {
+
+		if(debugBrain)console.log("---- Start Synapse ----");
+
 		let sensVal = 0;
 		if (this.source_type == 1) {
 			// is an external sense
@@ -82,266 +87,92 @@ class ABrain {
 			}
 			// console.log("+++");
 			// this.actions[this.sink_id](sensVal);
+
+			if(debugBrain)console.log("---- END Synapse ----");
 		}
 		
+		Sens_GrowthPotential(agentObj){
+			let sensAmmt = computeNormalizedGrowthPotential(agentObj.rootPick, agentObj.earthGrid, agentObj.plantMatterGrid)
+			if(debugBrain)console.log('sens growth Potential : '+ sensAmmt)
+			return sensAmmt 
+			}
+
 		Sens_MoveDirection(agentObj){
-			
-			return map(agentObj.growDirection, -3.1415, 3.1415, -1,1);
+			let moveDir = map(agentObj.growDirection, -3.1415, 3.1415, -1,1);
+			if(debugBrain)console.log('sens move direction  : '+ moveDir)
+			return moveDir
 		}
 		
 		Sens_RootMoistureLocal(agentObj){
-			
 			let rootPicVec = grids.moisture.indexToVector(agentObj.roots[agentObj.rootPick])
-			// console.log(rootPicVec)
 			let foundMoisture = grids.moisture.computeLocalMoisture(rootPicVec.x, rootPicVec.y).totalLocalMoisture;
-			// console.log(foundMoisture)
-			console.log("Sens_local moisture : " + foundMoisture)
+			if(debugBrain)console.log("Sens_local moisture : " + foundMoisture)
 			return map(foundMoisture, 0,10, -1,1)
 		}
 		
 		Sens_RootMoistureDir(agentObj){
 			
 			let rootPicVec = grids.moisture.indexToVector(agentObj.roots[agentObj.rootPick])
-			// console.log(rootPicVec)
 			let foundMoisture = grids.moisture.computeLocalMoisture(rootPicVec.x, rootPicVec.y).highestLocalMoistureDirection;
-			// console.log(foundMoisture.heading())
-			console.log("Sens_local moisture : " + foundMoisture.heading())
-			return map(foundMoisture.heading(), -3.1415, 3.1415, -1,1);
+			let foundHeading = map(foundMoisture.heading(), -3.1415, 3.1415, -1,1);
+			if(debugBrain)console.log("Sens moisture direction : " + foundHeading)
+			return foundHeading
 		}
 		
 		Sens_Age(agentObj) {
-			// console.log("SENS : age");
-			return map(agentObj.age, 0, maxCycles, 0, 1);
-			// age
+			let ageN = map(agentObj.age, 0, maxCycles, 0, 1);
+			if(debugBrain)console.log("sens age now : " + ageN);
+			return ageN
 		}
 		Sens_Random(agentObj) {
-			// console.log("SENS : random");
-			//
-			return random(-1, 1);
+			let randN = random(-1, 1)
+			if(debugBrain)console.log("sens random : " + randN );
+			return randN
 		}
-		
-		Sens_BLlr(agentObj){
-			//     /// sens blocked long left right
-			//     noStroke()
-			//     fill(0,0,200)
-			
-			//     let blockedL = checkPixeltoWall(agentObj.farLeft)
-			
-			//     // let gridPosL = [int((agentObj.farLeft.x/width)*100),int((agentObj.farLeft.y/height)*100)]
-			//     // let blockedL = worldGrid[gridPosL[0]][gridPosL[1]]
-			
-			//     if(agentObj.farLeft.x<0 || agentObj.farLeft.x>width){
-			//         blockedL = true
-			
-			//     }
-			//     let blockedR = checkPixeltoWall(agentObj.farRight)
-			//     if(agentObj.farRight.x<0 || agentObj.farRight.x>width){
-			//         blockedR = true
-			//     }
-			
-			//     let outVal = 0;
-			//     if(blockedR == true && blockedL == false){
-			//         outVal = -1
-			//         if(drawBrain){
-			//             rect(agentObj.farRight.x, agentObj.farRight.y, 2, 2)
-			//             stroke(0,50)
-			//             noFill()
-			//             line(agentObj.loc.x, agentObj.loc.y, agentObj.farRight.x, agentObj.farRight.y)
-			//         }
-			
-			
-			//     }else if(blockedR == false && blockedL == true){
-			//         outVal = 1
-			//         if(drawBrain){
-			//             rect(agentObj.farLeft.x, agentObj.farLeft.y, 2, 2)
-			//             stroke(0,50)
-			//             noFill()
-			//             line(agentObj.loc.x, agentObj.loc.y, agentObj.farLeft.x, agentObj.farLeft.y)
-			//         }
-			//     }
-			//     return(outVal)
-			
-			
-			
-		}
-		
-		Sens_Bl(agentObj) {
-			// // console.log("SENS : blocked left");
-			
-			// // let gridPosL = [int((agentObj.Lloc.x/width)*100),int((agentObj.Lloc.y/height)*100)]
-			// // let blockedL = worldGrid[gridPosL[0]][gridPosL[1]]
-			
-			// let blockedL = checkPixeltoWall(agentObj.Lloc)
-			
-			// if(agentObj.Lloc.x<0 || agentObj.Lloc.x>width){
-			//     blockedL = true
-			// }
-			
-			// if(blockedL){
-			//     return 1
-			// }else{
-			//     return 0
-			// }
-			
-		}
-		
-		Sens_Br(agentObj) {
-			// let gridPosR = [int((agentObj.Rloc.x/width)*100),int((agentObj.Rloc.y/height)*100)]
-			// let blockedR = worldGrid[gridPosR[0]][gridPosR[1]]
-			
-			// let blockedR = checkPixeltoWall(agentObj.Rloc)
-			
-			
-			
-			
-			// if(agentObj.Rloc.x<0 || agentObj.Rloc.x>width){
-			//     blockedR = true
-			// }
-			
-			// if(blockedR){
-			//     return 1
-			// }else{
-			//     return 0
-			// }
-			
-		}
-		
-		Sens_BLfd(agentObj){
-			// console.log(agentObj.farForward)
-			
-			//  // far forward looking
-			//  let gx  = int((agentObj.farForward.x/width)*100);
-			//  gx = constrain(gx ,0, worldGrid.length-1) 
-			//  let gy = int((agentObj.farForward.y/height)*100)
-			//  gy = constrain(gy ,0, worldGrid.length-1) 
-			
-			//  let gridPos = [gx,gy]
-			
-			
-			//  let blockedFwrd = false;
-			
-			//  try{
-			//    blockedFwrd = worldGrid[gridPos[0]][gridPos[1]]
-			
-			//  }catch{
-			//   console.log('bad loc')
-			//   console.log(gridPos)
-			//   console.log(worldGrid[gridPos[0]])
-			//   console.log(worldGrid[gridPos[0]][gridPos[1]])
-			// }
-			//--------------------------------------
-			// let blockedFwrd = checkPixeltoWall(agentObj.farForward)
-			
-			// // let pxlFwrd = GetPixel(agentObj.floc.x, agentObj.floc.y, wallLayer)[0];
-			
-			// if (blockedFwrd==true) {
-			
-			
-			//     if(drawBrain){
-			//         fill(200,0,0)
-			//         noStroke()
-			//         rect(agentObj.farForward.x, agentObj.farForward.y, 2, 2) // far forward loc
-			//         stroke(0,50)
-			//         noFill()
-			//         line(agentObj.loc.x, agentObj.loc.y, agentObj.farForward.x, agentObj.farForward.y)
-			
-			//     }
-			
-			
-			//     return 1
-			// }
-			// return 0;
-			
-		}
-		
-		Sens_Bfd(agentObj) {
-			// console.log("SENS : blocked forward");
-			
-			// let gridPos = [int((agentObj.floc.x/width)*100),int((agentObj.floc.y/height)*100)]
-			
-			// let gx  = int((agentObj.floc.x/width)*100);
-			// gx = constrain(gx ,0, worldGrid.length) 
-			// let gy = int((agentObj.floc.y/height)*100)
-			// gy = constrain(gy ,0, worldGrid.length) 
-			
-			// let gridPos = [gx,gy]
-			
-			
-			// // let pxlFwrd = GetPixel(agentObj.floc.x, agentObj.floc.y, wallLayer)[0];
-			// let blockedFwrd = worldGrid[gridPos[0]][gridPos[1]]
-			
-			// let blockedFwrd = checkPixeltoWall(agentObj.floc)
-			
-			
-			
-			// if( agentObj.floc.x < 0 || agentObj.floc.x > width){
-			//     blockedFwrd = true
-			// }
-			
-			// if( agentObj.floc.y < 0 || agentObj.floc.y > height){
-			//     blockedFwrd = true
-			// }
-			
-			// if (blockedFwrd==true) {
-			//     return 1
-			// }
-			// return 0;
-			// blockage forward
-		}
-		
+	
 		Sens_Energy(agentObj){
-			return map( agentObj.energy, 0,100, 0, 1);
+			let energyN = map( agentObj.energy, 0,100, 0, 1);
+			if(debugBrain)console.log("sens energy now : " + energyN );
+			return energyN
 		}
 		
-		Sens_Osc(agentObj) {
-			// console.log("SENS : osculator");
-			// oscillator
+		Sens_Osc(agentObj) {			// oscillator
 			agentObj.internalClock += agentObj.clockSpeed;
+			let newClock = agentObj.internalClock
+			if(debugBrain)console.log("sens Internal Clock : " + newClock );
 			return sin(this.internalClock);
 		}
-		
-		Sens_LMy(agentObj) {
-			// console.log("SENS : last y movement");
-			//last movement y
-		}
-		
-		// Sens_LBf(agentObj) {
-		//     // console.log("SENS : last x movement");
-		//     //last movement x
-		// }
-		
-		Sens_DCtr(agentObj){
-			// distance from end
-			let distN = dist(agentObj.loc.x, agentObj.loc.y, endzone[0], endzone[1] );
-			return map(distN, 0, width, 0, 1);
-			
-		}
+				
 		Act_OSC(trigger, agentObj) {
-			// console.log("ACT : set osculator");
-			// set osculator
+			if(debugBrain)console.log("Set Clock Speed :  " +  trigger );
 			agentObj.clockSpeed = trigger;
 		}
 		Act_Res(trigger, agentObj) {
-			// console.log("ACT : set responsiveness");
-			//set responsiveness
+			if(debugBrain)console.log("Set responsiveness :  " +  abs(trigger) );
 			agentObj.responsiveness = abs(trigger);
 		}
+
 		Act_SSpread(trigger, agentObj){
-			//set spread ammount
-			
+			agentObj.spreadAngle+= trigger
+			if(debugBrain)console.log("Set spread to  :  " +  agentObj.spreadAngle );
 		}
-		
 		Act_SetRootRange(target, agentObj){
 			// set root range
 			gentObj.rootRange = int(map(trigger, -1,1,agentObj.roots.length))
+			if(debugBrain)console.log("Set spread to  :  " + gentObj.rootRange)
 		}
 		
 		Act_SRoot(trigger, agentObj){
-			// console.log(trigger)
+			// console.log("SetRoot Trigger " + trigger)
+			if(isNaN(trigger)){
+				// console.log("ESCAPE")
+				return
+			}
 			let maxRootIdx = agentObj.roots.length
 			let minRootIdx = maxRootIdx - agentObj.rootRange
-			agentObj.rootPick = int(map(trigger, -1,1,minRootIdx,maxRootIdx)) // sets the root to look at. 
-			// console.log("set root pick to " + agentObj.rootPick);
+			let pickID = int(abs(map(trigger, -1,1,minRootIdx,maxRootIdx))) // sets the root to look at. 
+			agentObj.rootPick = pickID;
+			if(debugBrain)console.log("Set root to  :  " + agentObj.rootPick)
 		}
 		
 		Act_SetGrowAmmt(trigger, agentObj){
@@ -353,8 +184,6 @@ class ABrain {
 				agentObj.attemptToGrow();
 			}
 		}
-		
-		
-		
 	}
+	
 	
