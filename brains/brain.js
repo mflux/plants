@@ -1,5 +1,5 @@
 var drawBrain = false;
-var debugBrain = true;
+
 class ABrain {
 	constructor(brainGenes) {
 		this.geneSet = brainGenes;
@@ -19,7 +19,6 @@ class ABrain {
 		this.connection_weight = parseInt(this.connection_weight, 2); // convert back to number
 		this.connection_weight /= 10000;
 		
-		
 		this.senses = [
 			this.Sens_RootMoistureLocal,
 			this.Sens_RootMoistureDir,
@@ -27,32 +26,31 @@ class ABrain {
 			this.Sens_Osc,
 			this.Sens_Energy,
 			this.Sens_MoveDirection,
-			this.Sens_GrowthPotential
+			this.Sens_GrowthPotential,
+			this.Sens_Age
 		];
-		
-		// this.Sens_Bl,
-		// this.Sens_Br,
-		// this.Sens_BLfd,
-		// this.Sens_BLlr,
 		
 		this.source_ID = this.source_ID % this.senses.length;
 		
 		this.actions = [
 			this.Act_OSC,
 			this.Act_GRoot,
-			this.Act_SRoot
+			this.Act_SRoot,
+			this.Act_SSpread,
+			this.Act_SetRootRange
 		];
-		
 		
 		this.sink_id = this.sink_id % this.actions.length;
 		
-		// console.log("GSequence: " + this.GSequence);
-		// console.log("source_type: " + this.source_type);
-		// console.log("source_ID: " + this.source_ID);
-		// console.log("sink_type: " + this.sink_type);
-		// console.log("sink_id: " + this.sink_id);
-		// console.log("connection_weight: " + this.connection_weight);
-		// console.log("____")
+		if(debugBrain){
+			console.log("GSequence: " + this.GSequence);
+			console.log("source_type: " + this.source_type);
+			console.log("source_ID: " + this.source_ID);
+			console.log("sink_type: " + this.sink_type);
+			console.log("sink_id: " + this.sink_id);
+			console.log("connection_weight: " + this.connection_weight);
+			console.log("____")
+		}
 	}
 	
 	RunSynapse(agentObj) {
@@ -65,32 +63,41 @@ class ABrain {
 			sensVal = this.senses[this.source_ID](agentObj);
 		} else {
 			// is an internal neuron value
-			sensVal = agentObj.InternalNeurons[this.source_ID % 3]; // sets the sense as from an internal neuron
-			// console.log("internal input");
+			sensVal = agentObj.InternalNeurons[this.source_ID % agentObj.InternalNeurons.length]; // sets the sense as from an internal neuron
+			if(debugBrain)console.log("sens internal neuron : " + agentObj.InternalNeurons[this.source_ID % agentObj.InternalNeurons.length]);
 		}
 		
-		sensVal *= this.connection_weight;
-		// console.log("sensValue : " + sensVal);
+		sensVal *= this.connection_weight; // the connection weight is part of the genome, it will decide how strong to make the connection, can become negative
+		if(debugBrain)console.log("connection trigger : " + sensVal);
 		
 		if (this.sink_type == 1) {
 			// is an external action
 			this.actions[this.sink_id](sensVal, agentObj);
 		} else {
 			// sink to internal neuron value
-			let cval = agentObj.InternalNeurons[this.source_ID % 3];
-			agentObj.InternalNeurons[this.source_ID % 3] = Math.tanh(
-				(cval + sensVal) / 2 //does a tanh function for some reason idk why
-				);
-				// console.log(
-				//   "internal neuron : " + agentObj.InternalNeurons[this.source_ID % 3]
-				// );
+			let cval = agentObj.InternalNeurons[this.source_ID % agentObj.InternalNeurons.length];  // current value in the internal neuron
+			let setTo = Math.tanh( (cval + sensVal) );//does a tanh function for some reason idk why
+			if(isNaN(setTo)){
+				setTo = 0;
 			}
-			// console.log("+++");
-			// this.actions[this.sink_id](sensVal);
-
+			agentObj.InternalNeurons[this.source_ID % agentObj.InternalNeurons.length] = setTo;
+			
+			if(debugBrain)console.log("set internal neuron : " + setTo);
+			}
+			
 			if(debugBrain)console.log("---- END Synapse ----");
 		}
 		
+
+		//  #####  ####### #     #  #####  #######  #####  
+		// #     # #       ##    # #     # #       #     # 
+		// #       #       # #   # #       #       #       
+		//  #####  #####   #  #  #  #####  #####    #####  
+		//  	 # #       #   # #       # #             # 
+		// #     # #       #    ## #     # #       #     # 
+		//  #####  ####### #     #  #####  #######  #####  
+														
+
 		Sens_GrowthPotential(agentObj){
 			let sensAmmt = computeNormalizedGrowthPotential(agentObj.rootPick, agentObj.earthGrid, agentObj.plantMatterGrid)
 			if(debugBrain)console.log('sens growth Potential : '+ sensAmmt)
@@ -138,10 +145,22 @@ class ABrain {
 		
 		Sens_Osc(agentObj) {			// oscillator
 			agentObj.internalClock += agentObj.clockSpeed;
-			let newClock = agentObj.internalClock
+			let newClock = sin(agentObj.internalClock);
+
 			if(debugBrain)console.log("sens Internal Clock : " + newClock );
-			return sin(this.internalClock);
+			return newClock
 		}
+
+
+		// ACTIONS
+//     #     #####  ####### ### ####### #     #  #####  
+//    # #   #     #    #     #  #     # ##    # #     # 
+//   #   #  #          #     #  #     # # #   # #       
+//  #     # #          #     #  #     # #  #  #  #####  
+//  ####### #          #     #  #     # #   # #       # 
+//  #     # #     #    #     #  #     # #    ## #     # 
+//  #     #  #####     #    ### ####### #     #  #####  
+													 
 				
 		Act_OSC(trigger, agentObj) {
 			if(debugBrain)console.log("Set Clock Speed :  " +  trigger );
@@ -156,10 +175,10 @@ class ABrain {
 			agentObj.spreadAngle+= trigger
 			if(debugBrain)console.log("Set spread to  :  " +  agentObj.spreadAngle );
 		}
-		Act_SetRootRange(target, agentObj){
+		Act_SetRootRange(trigger, agentObj){
 			// set root range
-			gentObj.rootRange = int(map(trigger, -1,1,agentObj.roots.length))
-			if(debugBrain)console.log("Set spread to  :  " + gentObj.rootRange)
+			agentObj.rootRange = int(map(trigger, -1,1,agentObj.roots.length))
+			if(debugBrain)console.log("Set range to  :  " + agentObj.rootRange)
 		}
 		
 		Act_SRoot(trigger, agentObj){
@@ -175,15 +194,19 @@ class ABrain {
 			if(debugBrain)console.log("Set root to  :  " + agentObj.rootPick)
 		}
 		
-		Act_SetGrowAmmt(trigger, agentObj){
-			agentObj.growDistance = int(map(trigger, -1,1, agentObj.minGrowDistance,agentObj.maxGrowDistance)) // sets the root to look at. 
-		}
+		// Act_SetGrowAmmt(trigger, agentObj){
+		// 	agentObj.growDistance = int(map(trigger, -1,1, agentObj.minGrowDistance,agentObj.maxGrowDistance)) // sets the root grow distance
+		// 	if(debugBrain)console.log("Set root grow distance  :  " + agentObj.growDistance)
+		// }
 		
 		Act_GRoot(trigger, agentObj){
 			if(trigger>.5){
+				if(debugBrain)console.log("Action Grow Root  :  ")
 				agentObj.attemptToGrow();
+				
 			}
 		}
 	}
 	
 	
+

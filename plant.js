@@ -10,7 +10,9 @@ class Plant {
 
     this.makeNewRoot(createVector(initialPlantX, initialPlantY),createVector(initialPlantX, initialPlantY+1));
 
-    console.log(genomeSequenceIn)
+    // console.log(genomeSequenceIn)
+
+    this.GSequence = genomeSequenceIn
 
     this.health = 100;
     this.internalClock = 0;
@@ -18,7 +20,7 @@ class Plant {
     this.responsiveness = 1;
 
     this.brains = [];
-    this.InternalNeurons = [0, 0, 0];
+    this.InternalNeurons = [0, 0, 0,0,0,0];
 
     this.energy = 10;
     this.spreadAngle = 100;
@@ -39,8 +41,8 @@ class Plant {
 
     this.rootPick = 0;
 
-    for (var intI = 0; intI < genomeSequenceIn.length; intI++) {
-      let synapse = new ABrain(genomeSequenceIn[intI]);
+    for (var intI = 0; intI < this.GSequence.length; intI++) {
+      let synapse = new ABrain(this.GSequence[intI]);
       this.brains.push(synapse);
     }
 
@@ -58,9 +60,11 @@ class Plant {
   }
 
   runBrain() {
+    if(debugBrain)console.log("===============START BRAIN===============");
     for (let s in this.brains) {
       this.brains[s].RunSynapse(this);
     }
+    if(debugBrain)console.log("===============END BRAIN===============")
     this.age += 1;
     // this.energy-=.1
   }
@@ -68,30 +72,18 @@ class Plant {
 
   attemptToGrow() {
     let foundRoot = false;
-
-    for (var i = 0; i < 1000; i++) {
-      if(foundRoot == false){
         const spreadAngle = this.spreadAngle;
         const myDegrees = map(random(), 0, 1, 90 + spreadAngle, 90 - spreadAngle);
-        // const moveAmount = int(random(this.minGrowDistance, this.maxGrowDistance));
-        // const moveAmount
-        const dirVec = p5.Vector.fromAngle(radians(myDegrees), this.growDistance);
+        const dirVec = p5.Vector.fromAngle(radians(myDegrees), 5);// this.growDistance);
         dirVec.x = int(dirVec.x)
         dirVec.y = int(dirVec.y)
-        this.rootRange = constrain(this.roots.length - this.pickRootRange, 0, this.roots.length)
-        // Pick only from the past 50 root pixels.
-        // this.rootPick = int(random(this.rootRange, this.roots.length));
         const rootVector = this.plantMatterGrid.indexToVector(this.roots[this.rootPick]);
         let nextPossibleRoot = p5.Vector.add(rootVector, dirVec);
-
         let earthType =  this.earthGrid.get(nextPossibleRoot.x, nextPossibleRoot.y);
         if (doesPlantExistAtIndex(this.roots[this.rootPick]) && earthType === SoilType.Soft) {
           foundRoot = true;
           this.makeNewRoot(rootVector, nextPossibleRoot);
-          break;
         }
-      }
-    }
   }
 
   makeNewRoot(fromPos,toPos) {
