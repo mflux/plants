@@ -14,6 +14,7 @@ class Earth extends Grid {
 }
 
 function generateEarth(width, height) {
+  noiseSeed(Math.random() * 10000);
   const earthGrid = new Earth(width, height);
   const earthNoiseScale1 = 0.001;
   const earthNoiseScale2 = 0.05;
