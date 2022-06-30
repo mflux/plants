@@ -22,9 +22,9 @@ class Plant {
     this.brains = [];
     this.InternalNeurons = [0, 0, 0,0,0,0];
 
+    //  TODO(Harvey): Read by brain but currently not modified.
     this.energy = 10;
     this.spreadAngle = 100;
-
 
     this.minGrowDistance = 1;
     this.maxGrowDistance = 1;
@@ -46,17 +46,6 @@ class Plant {
       this.brains.push(synapse);
     }
 
-  }
-
-  simulate() {
-
-    print(this.energy)
-    this.energy += 1;
-
-    if (this.energy > 1) {
-      this.energy -= 1;
-      this.attemptToGrow();
-    }
   }
 
   runBrain() {

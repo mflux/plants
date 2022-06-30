@@ -30,32 +30,32 @@ function setup() {
   grids.rootAngles = new ValueGrid(SIM_WIDTH,SIM_HEIGHT);
 
   // create one plant for testing
-  // let GSEQ = makeRandomGenome();
-
-  // let GSEQ =  ['01F2A432', '3E2F2328', '97A106DA', '00781C05', '07BC208A', '0E3E1E69', '944E6482', '0A183698', '088482C2', '78B41CE4', '44647028', '09347E61', '0965D652', '07902D3C', '85E6DE0C', '504E0DA6', 'A073892C', '013884BE', '042E57FA', '0B9FA77E']
-// let GSEQ = ['01D2F4EC', '3E2F2328', 'F5DA1814', '00781C05', '07BC208A', '0E3E1E69', '944E6482', '0A183698', '04802777', '78B41CE4', 'E8ED3C4E', '09347E61', '0965D652', '07902D3C', '85E6DE0C', '646AF80A', 'EBD1D0FE', '013884BE', 'B6E1D54A', '02EFFAA5'];
-   // ['0753E434', '9C5F3888', '018888E2', '0CEC2A48', '010442DC', 'C33C0698', '096080AC', '07D5FFFA', '0B2EB267', '06923CAC', '0BE7BE2C', '0F344749', '70D717AC', '076F6A84', '03306BF7', '0CE447B6', '0672D24D', 'F61E65A4', '0F811A9A']
-
-let GSEQ = ['D428B404', '8EE7EBEA', '1983EA02', '59DA6C5F', '86A4A4A4', '61D1C86A', '090C4B15', 'AE07B354', '068B2C5C', '362564BE', '3777782A', 'BE1B8952', '0E853D48', 'B08FF8F7', '0A2EA3A8', '278045E4', '1B709BEE', '7B0DEA96', '11EB0096', 'A20F7D33', '7F60F5AA', 'C7581AD2', '64EC60CC', '620761C1', '42477078', 'A366F138', '17012DA8'];
+  let GSEQ = makeRandomGenome();
+  // let GSEQ = ['01F2A432', '3E2F2328', '97A106DA', '00781C05', '07BC208A', '0E3E1E69', '944E6482', '0A183698', '088482C2', '78B41CE4', '44647028', '09347E61', '0965D652', '07902D3C', '85E6DE0C', '504E0DA6', 'A073892C', '013884BE', '042E57FA', '0B9FA77E']
+  // let GSEQ = ['01D2F4EC', '3E2F2328', 'F5DA1814', '00781C05', '07BC208A', '0E3E1E69', '944E6482', '0A183698', '04802777', '78B41CE4', 'E8ED3C4E', '09347E61', '0965D652', '07902D3C', '85E6DE0C', '646AF80A', 'EBD1D0FE', '013884BE', 'B6E1D54A', '02EFFAA5'];
+  // ['0753E434', '9C5F3888', '018888E2', '0CEC2A48', '010442DC', 'C33C0698', '096080AC', '07D5FFFA', '0B2EB267', '06923CAC', '0BE7BE2C', '0F344749', '70D717AC', '076F6A84', '03306BF7', '0CE447B6', '0672D24D', 'F61E65A4', '0F811A9A']
+  // let GSEQ = ['D428B404', '8EE7EBEA', '1983EA02', '59DA6C5F', '86A4A4A4', '61D1C86A', '090C4B15', 'AE07B354', '068B2C5C', '362564BE', '3777782A', 'BE1B8952', '0E853D48', 'B08FF8F7', '0A2EA3A8', '278045E4', '1B709BEE', '7B0DEA96', '11EB0096', 'A20F7D33', '7F60F5AA', 'C7581AD2', '64EC60CC', '620761C1', '42477078', 'A366F138', '17012DA8'];
 
   if(mostRootsFound > 1){
-    GSEQ = MuttateGene(bestGenes)
+    GSEQ = mutateGene(bestGenes)
   }
-  
+
   PP = spawnPlant(grids.earth,grids.rootAngles, GSEQ);
 }
 
 function draw() {
-  // PP.simulate();
   PP.runBrain();
 
-if(PP.age > 20 && PP.roots.length == 1){  // give up early if no growth 
-  setup();
-}
+  // give up early if no growth
+  if(PP.age > 20 && PP.roots.length == 1){
+    setup();
+  }
 
-  if(PP.age> 500){ // reset condition after 500 steps. 
-    if(PP.roots.length > mostRootsFound){ // check to see if roots grew greater then last recorded
-      bestGenes = PP.GSequence; 
+  // reset condition after 500 steps.
+  if (PP.age > 500) {
+    // check to see if roots grew greater then last recorded
+    if (PP.roots.length > mostRootsFound) {
+      bestGenes = PP.GSequence;
       mostRootsFound = PP.roots.length
       console.log("New Best Plant " + mostRootsFound + " number of roots")
       console.log(PP.GSequence)
@@ -76,15 +76,15 @@ if(PP.age > 20 && PP.roots.length == 1){  // give up early if no growth
   renderGrid(grids.earth, (index, value) => {
     switch (value) {
       case SoilType.None:
-        return color(255, 255, 255);
+      return color(255, 255, 255);
       case SoilType.Soft:
-        // Color soil differently depending on moisture.
-        const moisture = grids.moisture.cells[index];
-        return color(75 + 30 * moisture, 42 + 30 * moisture, 22 + 30 * moisture);
+      // Color soil differently depending on moisture.
+      const moisture = grids.moisture.cells[index];
+      return color(75 + 30 * moisture, 42 + 30 * moisture, 22 + 30 * moisture);
       case SoilType.Hard:
-        return color(54, 52, 51);
+      return color(54, 52, 51);
       default:
-        return color(255, 255, 0);
+      return color(255, 255, 0);
     }
   });
 
@@ -100,34 +100,35 @@ if(PP.age > 20 && PP.roots.length == 1){  // give up early if no growth
   text('plant age : ' + PP.age, 20, 40);
   text('internal neurons : ' + PP.InternalNeurons, 20, 60);
   text('roots : ' + PP.roots.length, 20, 80);
-  
+
 }
 
-function MuttateGene(GeneIn) {
-	let randPick = int(random(GeneIn.length));
-	let digit = random(80000, 5000000);
-	let newHex = hex(digit,8).replace('.', '0')
-	GeneIn[randPick] = newHex;
-	let GeneOut = JSON.parse(JSON.stringify(GeneIn));
-	return GeneOut;
+function mutateGene(geneIn) {
+  const geneOut = geneIn.slice();
+
+  let randPick = int(random(geneIn.length));
+  let digit = random(80000, 5000000);
+  let newHex = hex(digit,8).replace('.', '0')
+  geneOut[randPick] = newHex;
+
+  return GeneOut;
 }
 
 function makeRandomGenome(){
-	let Genome = []
+  let genome = []
 
-	numberOfGenes = int(random(5,124));
+  numberOfGenes = int(random(5, 124));
 
-	for (let b = 0; b < numberOfGenes; b++) {
-		let digit = random(80000, 50000000);
-		Genome.push(hex(digit, 8).replace('.', '0'));
-	}
-	
-	return Genome
+  for (let b = 0; b < numberOfGenes; b++) {
+    let digit = random(80000, 50000000);
+    genome.push(hex(digit, 8).replace('.', '0'));
+  }
+
+  return genome
 }
 
 function hex2bin(hex) {
   let val = parseInt(hex, 16);
-  // console.log(val)
   let binStr = val.toString(2);
   while (binStr.length < 32) {
     binStr = "0" + binStr;
