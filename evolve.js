@@ -29,7 +29,7 @@ function restartEvolution() {
 
   // create one plant for testing
   let GSEQ = makeRandomGeneSequence();
-  GSEQ = ['22AA875C', '6DB88CED', 'CF44CC68', '179F5C28', '9E74881C', 'B494B61F', '9296501C', '01C7C55F'];
+  GSEQ = ['22AA875C', 'EEFDFA44', 'DDAF06F8', '679AA23A', 'E623EAC8', 'B494B61F', '9296501C', '68F4E915'];
   // GSEQ = ['C6438214', '060BE4FE', 'F1B8D65C', '0E1EB8FE', '80A60DE8', 'F7BBFA08', '9FBD40DA'];
   // GSEQ = ['A47E7D36', '9640BAE8', 'E659C86C', '0C43523E', '03BD28EE', '001C8036', 'D7C2FD56', '075B0232', '0495D1A8', '37AEBBB8', '092521F6', '45654ABE', '110D31AC', '0EA93979', '376F75F2', '045EA449', 'A654446A', '09EC6546', '05AAD05A', '418AD793', '75601B07', '0071A956', '0A1CB7D6', '00E551F6', 'DB425A3A', '2B7255FB', '4243BEDC', '0BB98698', '043C688E', '5D926EF8', '01BFA6B1', '01EEF906', '216C2E28', '9A0D8C2A', '0F805EC6', '094982D6', '0852CC72', 'C4566086'];
   // GSEQ = ['01F2A432', '3E2F2328', '97A106DA', '00781C05', '07BC208A', '0E3E1E69', '944E6482', '0A183698', '088482C2', '78B41CE4', '44647028', '09347E61', '0965D652', '07902D3C', '85E6DE0C', '504E0DA6', 'A073892C', '013884BE', '042E57FA', '0B9FA77E']
@@ -56,8 +56,8 @@ function stepEvolution() {
 
   if (PP.age > MAX_PLANT_AGE) {
     // check to see if roots grew greater then last recorded
-    if (bestResult === undefined || PP.roots.length > bestResult.reward) {
-      const result = finishEvolution(PP.GSequence, PP.roots.length);
+    if (bestResult === undefined || rewardFunction(PP) > bestResult.reward) {
+      const result = finishEvolution(PP.GSequence, rewardFunction(PP));
       if (bestResult === undefined) {
         bestResult = result;
         console.log("New Best Plant " + bestResult.reward + " number of roots");
@@ -71,6 +71,11 @@ function stepEvolution() {
     }
     PP = restartEvolution();
   }
+}
+
+function rewardFunction(plant) {
+  // return plant.roots.length;
+  return grids.moisture.computeTotalMoistureForIndices(plant.roots);
 }
 
 function finishEvolution(geneSequence, reward) {
