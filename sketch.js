@@ -20,11 +20,25 @@ var debugBrain = false;
 const grids = {};
 
 let debugText;
+let dom_fastModeToggle;
+let dom_fastForwardButton;
+
+var FastMode = false;
+
+
+function toggleFastMode() {
+  if (dom_fastModeToggle.checked()) {
+    FastMode = true;
+  } else {
+    FastMode = false;
+  }
+}
+
 
 // P5.js sketch.
 function setup() {
   frameRate(10000);
-  if(debugBrain){
+  if (debugBrain) {
     frameRate(3);
   }
   //
@@ -36,10 +50,17 @@ function setup() {
 
   remakeGrids();
   restartEvolution();
+  dom_fastModeToggle = createCheckbox("FastMode", 0)
+  dom_fastModeToggle.position(10, 10);
+  dom_fastModeToggle.changed(toggleFastMode);
+
+  dom_fastForwardButton = createButton("Fast Forward");
+  dom_fastForwardButton.mousePressed(brrrrrrr)
+  dom_fastForwardButton.position(10, 30);
 
   debugText = createP('Nothing');
   debugText.style('font-size', '16px');
-  debugText.position(10, 10);
+  debugText.position(10, 40);
 }
 
 let lastStepTime = 0;
@@ -54,15 +75,15 @@ function draw() {
   renderGrid(grids.earth, (index, value) => {
     switch (value) {
       case SoilType.None:
-      return color(255, 255, 255);
+        return color(255, 255, 255);
       case SoilType.Soft:
-      // Color soil differently depending on moisture.
-      const moisture = grids.moisture.cells[index];
-      return color(75 + 30 * moisture, 42 + 30 * moisture, 22 + 30 * moisture);
+        // Color soil differently depending on moisture.
+        const moisture = grids.moisture.cells[index];
+        return color(75 + 30 * moisture, 42 + 30 * moisture, 22 + 30 * moisture);
       case SoilType.Hard:
-      return color(54, 52, 51);
+        return color(54, 52, 51);
       default:
-      return color(255, 255, 0);
+        return color(255, 255, 0);
     }
   });
 
@@ -80,18 +101,25 @@ function draw() {
   debugText.html(`
   <pre>
   Frame time:       ${timeDelta}
-  Reward (roots):   ${PP.roots.length}
+  Roots:   ${PP.roots.length}
   Root pick:        ${PP.rootPick}
   Plant age:        ${PP.age}
   Internal neurons: ${PP.InternalNeurons}
   </pre>
   `);
+
+  if (FastMode) {
+    for (let i = 0; i < 100; i++) {
+      stepEvolution();
+    }
+  }
+
 }
 
 function brrrrrrr() {
-  n = 100000;
+  n = 50000;
   console.time('sim')
-  for (let i = 0; i < n; i++){
+  for (let i = 0; i < n; i++) {
     stepEvolution();
   }
   console.timeEnd('sim');

@@ -8,7 +8,7 @@ class Plant {
 
     // this.makeNewRoot(initialPlantX, initialPlantY);
 
-    this.makeNewRoot(createVector(initialPlantX, initialPlantY),createVector(initialPlantX, initialPlantY+1));
+    this.makeNewRoot(createVector(initialPlantX, initialPlantY), createVector(initialPlantX, initialPlantY + 1));
 
     // console.log(genomeSequenceIn)
 
@@ -20,7 +20,7 @@ class Plant {
     this.responsiveness = 1;
 
     this.brains = [];
-    this.InternalNeurons = [0, 0, 0,0,0,0];
+    this.InternalNeurons = [0, 0, 0, 0, 0, 0];
 
     //  TODO(Harvey): Read by brain but currently not modified.
     this.energy = 10;
@@ -49,11 +49,11 @@ class Plant {
   }
 
   runBrain() {
-    if(debugBrain)console.log("===============START BRAIN===============");
+    if (debugBrain) console.log("===============START BRAIN===============");
     for (let s in this.brains) {
       this.brains[s].RunSynapse(this);
     }
-    if(debugBrain)console.log("===============END BRAIN===============")
+    if (debugBrain) console.log("===============END BRAIN===============")
     this.age += 1;
     // this.energy-=.1
   }
@@ -68,7 +68,7 @@ class Plant {
     const rootVector = this.plantMatterGrid.indexToVector(this.roots[this.rootPick]);
     const nextPossibleRoot = p5.Vector.add(rootVector, dirVec);
     const nextPossibleIndex = this.plantMatterGrid.xyToIndex(nextPossibleRoot.x, nextPossibleRoot.y);
-    let earthType =  this.earthGrid.get(nextPossibleRoot.x, nextPossibleRoot.y);
+    let earthType = this.earthGrid.get(nextPossibleRoot.x, nextPossibleRoot.y);
     if (doesPlantExistAtIndex(nextPossibleIndex) === false && earthType === SoilType.Soft) {
       this.makeNewRoot(rootVector, nextPossibleRoot);
     }
@@ -77,14 +77,14 @@ class Plant {
   makeNewRoot(fromPos, toPos) {
     let rootAngleFrom = fromPos.angleBetween(toPos);
     this.plantMatterGrid.set(toPos.x, toPos.y, this);
-    this.rootAngles.set(toPos.x, toPos.y ,rootAngleFrom)
+    this.rootAngles.set(toPos.x, toPos.y, rootAngleFrom)
     this.roots.push(this.plantMatterGrid.xyToIndex(toPos.x, toPos.y));
 
   }
 
   // Returns true if the plant has grown at all. Else returns false.
   hasGrown() {
-    return this.roots.length > 1;
+    return this.roots.length > 2;
   }
 }
 
@@ -101,7 +101,7 @@ function searchForAppropriatePlantY(x, earthGrid) {
 }
 
 // Spawns a plant, given an earth grid.
-function spawnPlant(earthGrid,rootAngles, genomeSequence) {
+function spawnPlant(earthGrid, rootAngles, genomeSequence) {
   const plantX = int(random(earthGrid.width));
   const plantY = searchForAppropriatePlantY(plantX, earthGrid);
   return new Plant(plantX, plantY, grids.plantMatter, earthGrid, rootAngles, genomeSequence);
