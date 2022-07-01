@@ -19,7 +19,7 @@ var debugBrain = false;
 // Instantiated on setup().
 const grids = {};
 
-let debugText;
+let dom_debugText;
 let dom_fastModeToggle;
 let dom_fastForwardButton;
 
@@ -34,6 +34,7 @@ function toggleFastMode() {
   }
 }
 
+var simViewGraphics;
 
 // P5.js sketch.
 function setup() {
@@ -41,11 +42,12 @@ function setup() {
   if (debugBrain) {
     frameRate(3);
   }
-  //
+
   pixelDensity(1);
   noSmooth();
-  const canvas = createCanvas(SIM_WIDTH, SIM_HEIGHT);
-  canvas.style("transform", "scale(2) translate(25%, 25%)");
+  simViewGraphics = createGraphics(SIM_WIDTH, SIM_HEIGHT);
+  const canvas = createCanvas(SIM_WIDTH * 4, SIM_HEIGHT * 4);
+  // canvas.style("transform", "scale(2) translate(25%, 25%)");
   canvas.style("image-rendering", "pixelated");
 
   remakeGrids();
@@ -58,19 +60,19 @@ function setup() {
   dom_fastForwardButton.mousePressed(brrrrrrr)
   dom_fastForwardButton.position(10, 30);
 
-  debugText = createP('Nothing');
-  debugText.style('font-size', '16px');
-  debugText.position(10, 40);
+  dom_debugText = createP('Nothing');
+  dom_debugText.style('font-size', '16px');
+  dom_debugText.position(10, 40);
 }
 
 let lastStepTime = 0;
 
 function draw() {
   stepEvolution();
-  fill(0)
-  background(1, 1, 1);
+  simViewGraphics.fill(0)
+  simViewGraphics.background(1, 1, 1);
   // Place pixels based on the grid.
-  loadPixels();
+  simViewGraphics.loadPixels();
 
   renderGrid(grids.earth, (index, value) => {
     switch (value) {
@@ -79,7 +81,7 @@ function draw() {
       case SoilType.Soft:
         // Color soil differently depending on moisture.
         const moisture = grids.moisture.cells[index];
-        return color(75 + 30 * moisture, 42 + 30 * moisture, 22 + 30 * moisture);
+        return color(75 + 60 * moisture, 42 + 60 * moisture, 22 + 60 * moisture);
       case SoilType.Hard:
         return color(54, 52, 51);
       default:
@@ -88,21 +90,30 @@ function draw() {
   });
 
   renderGrid(grids.plantMatter, (index, value) => {
+
+
     if (value != null) {
-      return color(200, 0, 0);
+
+      if (grids.earth.cells[index] === SoilType.None) {
+        return color(0, 200, 0);
+      } else {
+        return color(200, 200, 200);
+      }
+
     }
   });
 
-  updatePixels();
+  simViewGraphics.updatePixels();
+  image(simViewGraphics, 0, 0, width, height)
 
   timeDelta = millis() - lastStepTime;
   lastStepTime = millis();
 
-  debugText.html(`
+  dom_debugText.html(`
   <pre>
   Frame time:       ${timeDelta}
-  Roots:   ${PP.roots.length}
-  Root pick:        ${PP.rootPick}
+  Cells:   ${PP.cells.length}
+  Root pick:        ${PP.cellPick}
   Plant age:        ${PP.age}
   Internal neurons: ${PP.InternalNeurons}
   </pre>
@@ -117,7 +128,7 @@ function draw() {
 }
 
 function brrrrrrr() {
-  n = 50000;
+  n = 100000;
   console.time('sim')
   for (let i = 0; i < n; i++) {
     stepEvolution();

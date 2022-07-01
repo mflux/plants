@@ -24,5 +24,5 @@ testPotentialPlantMatterGrid.cells = [
 ];
 
 createTest("Computed correct normalized growth potential", () => {
-  return computeNormalizedGrowthPotential(4, testPotentialEarthGrid, testPotentialPlantMatterGrid);
+  return computeNormalizedRootGrowthPotential(4, testPotentialEarthGrid, testPotentialPlantMatterGrid);
 }, 0.625)

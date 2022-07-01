@@ -26,7 +26,8 @@ class ABrain {
 			this.Sens_Osc,
 			this.Sens_Energy,
 			this.Sens_MoveDirection,
-			this.Sens_GrowthPotential,
+			this.Sens_Root_GrowthPotential,
+			this.Sens_Branch_GrowthPotential,
 			this.Sens_Age
 		];
 
@@ -35,6 +36,7 @@ class ABrain {
 		this.actions = [
 			this.Act_OSC,
 			this.Act_GRoot,
+			this.Act_GBranch,
 			this.Act_SRoot,
 			this.Act_SSpread,
 			this.Act_SetRootRange
@@ -42,7 +44,7 @@ class ABrain {
 
 		this.sink_id = this.sink_id % this.actions.length;
 
-		if(debugBrain){
+		if (debugBrain) {
 			console.log("GSequence: " + this.GSequence);
 			console.log("source_type: " + this.source_type);
 			console.log("source_ID: " + this.source_ID);
@@ -55,7 +57,7 @@ class ABrain {
 
 	RunSynapse(agentObj) {
 
-		if(debugBrain)console.log("---- Start Synapse ----");
+		if (debugBrain) console.log("---- Start Synapse ----");
 
 		let sensVal = 0;
 		if (this.source_type == 1) {
@@ -64,11 +66,11 @@ class ABrain {
 		} else {
 			// is an internal neuron value
 			sensVal = agentObj.InternalNeurons[this.source_ID % agentObj.InternalNeurons.length]; // sets the sense as from an internal neuron
-			if(debugBrain)console.log("sens internal neuron : " + agentObj.InternalNeurons[this.source_ID % agentObj.InternalNeurons.length]);
+			if (debugBrain) console.log("sens internal neuron : " + agentObj.InternalNeurons[this.source_ID % agentObj.InternalNeurons.length]);
 		}
 
 		sensVal *= this.connection_weight; // the connection weight is part of the genome, it will decide how strong to make the connection, can become negative
-		if(debugBrain)console.log("connection trigger : " + sensVal);
+		if (debugBrain) console.log("connection trigger : " + sensVal);
 
 		if (this.sink_type == 1) {
 			// is an external action
@@ -76,137 +78,151 @@ class ABrain {
 		} else {
 			// sink to internal neuron value
 			let cval = agentObj.InternalNeurons[this.source_ID % agentObj.InternalNeurons.length];  // current value in the internal neuron
-			let setTo = Math.tanh( (cval + sensVal) );//does a tanh function for some reason idk why
-			if(isNaN(setTo)){
+			let setTo = Math.tanh((cval + sensVal));//does a tanh function for some reason idk why
+			if (isNaN(setTo)) {
 				setTo = 0;
 			}
 			agentObj.InternalNeurons[this.source_ID % agentObj.InternalNeurons.length] = setTo;
 
-			if(debugBrain)console.log("set internal neuron : " + setTo);
-			}
-
-			if(debugBrain)console.log("---- END Synapse ----");
+			if (debugBrain) console.log("set internal neuron : " + setTo);
 		}
 
-
-		//  #####  ####### #     #  #####  #######  #####
-		// #     # #       ##    # #     # #       #     #
-		// #       #       # #   # #       #       #
-		//  #####  #####   #  #  #  #####  #####    #####
-		//  	 # #       #   # #       # #             #
-		// #     # #       #    ## #     # #       #     #
-		//  #####  ####### #     #  #####  #######  #####
+		if (debugBrain) console.log("---- END Synapse ----");
+	}
 
 
-		Sens_GrowthPotential(agentObj){
-			let sensAmmt = computeNormalizedGrowthPotential(agentObj.rootPick, agentObj.earthGrid, agentObj.plantMatterGrid)
-			if(debugBrain)console.log('sens growth Potential : '+ sensAmmt)
-			return sensAmmt
-			}
+	//  #####  ####### #     #  #####  #######  #####
+	// #     # #       ##    # #     # #       #     #
+	// #       #       # #   # #       #       #
+	//  #####  #####   #  #  #  #####  #####    #####
+	//  	 # #       #   # #       # #             #
+	// #     # #       #    ## #     # #       #     #
+	//  #####  ####### #     #  #####  #######  #####
 
-		Sens_MoveDirection(agentObj){
-			let moveDir = map(agentObj.growDirection, -3.1415, 3.1415, -1,1);
-			if(debugBrain)console.log('sens move direction  : '+ moveDir)
-			return moveDir
+
+	Sens_Root_GrowthPotential(agentObj) {
+		let sensAmmt = computeNormalizedRootGrowthPotential(agentObj.cellPick, agentObj.earthGrid, agentObj.plantMatterGrid)
+		if (debugBrain) console.log('sens root growth Potential : ' + sensAmmt)
+		return sensAmmt
+	}
+
+	Sens_Branch_GrowthPotential(agentObj) {
+		let sensAmmt = computeNormalizedBranchGrowthPotential(agentObj.cellPick, agentObj.earthGrid, agentObj.plantMatterGrid)
+		if (debugBrain) console.log('sens branch growth Potential : ' + sensAmmt)
+		return sensAmmt
+	}
+
+	Sens_MoveDirection(agentObj) {
+		let moveDir = map(agentObj.growDirection, -3.1415, 3.1415, -1, 1);
+		if (debugBrain) console.log('sens move direction  : ' + moveDir)
+		return moveDir
+	}
+
+	Sens_RootMoistureLocal(agentObj) {
+		let rootPicVec = grids.moisture.indexToVector(agentObj.cells[agentObj.cellPick])
+		let foundMoisture = grids.moisture.computeLocalMoisture(rootPicVec.x, rootPicVec.y).totalLocalMoisture;
+		if (debugBrain) console.log("Sens_local moisture : " + foundMoisture)
+		return map(foundMoisture, 0, 10, -1, 1)
+	}
+
+	Sens_RootMoistureDir(agentObj) {
+
+		let rootPicVec = grids.moisture.indexToVector(agentObj.cells[agentObj.cellPick])
+		let foundMoisture = grids.moisture.computeLocalMoisture(rootPicVec.x, rootPicVec.y).highestLocalMoistureDirection;
+		let foundHeading = map(foundMoisture.heading(), -3.1415, 3.1415, -1, 1);
+		if (debugBrain) console.log("Sens moisture direction : " + foundHeading)
+		return foundHeading
+	}
+
+	Sens_Age(agentObj) {
+		let ageN = map(agentObj.age, 0, MAX_PLANT_AGE, 0, 1);
+		if (debugBrain) console.log("sens age now : " + ageN);
+		return ageN
+	}
+	Sens_Random(agentObj) {
+		let randN = random(-1, 1)
+		if (debugBrain) console.log("sens random : " + randN);
+		return randN
+	}
+
+	Sens_Energy(agentObj) {
+		let energyN = map(agentObj.energy, 0, 100, 0, 1);
+		if (debugBrain) console.log("sens energy now : " + energyN);
+		return energyN
+	}
+
+	Sens_Osc(agentObj) {			// oscillator
+		agentObj.internalClock += agentObj.clockSpeed;
+		let newClock = sin(agentObj.internalClock);
+
+		if (debugBrain) console.log("sens Internal Clock : " + newClock);
+		return newClock
+	}
+
+
+	// ACTIONS
+	//     #     #####  ####### ### ####### #     #  #####
+	//    # #   #     #    #     #  #     # ##    # #     #
+	//   #   #  #          #     #  #     # # #   # #
+	//  #     # #          #     #  #     # #  #  #  #####
+	//  ####### #          #     #  #     # #   # #       #
+	//  #     # #     #    #     #  #     # #    ## #     #
+	//  #     #  #####     #    ### ####### #     #  #####
+
+
+	Act_OSC(trigger, agentObj) {
+		if (debugBrain) console.log("Set Clock Speed :  " + trigger);
+		agentObj.clockSpeed = trigger;
+	}
+	Act_Res(trigger, agentObj) {
+		if (debugBrain) console.log("Set responsiveness :  " + abs(trigger));
+		agentObj.responsiveness = abs(trigger);
+	}
+
+	Act_SSpread(trigger, agentObj) {
+		agentObj.spreadAngle += trigger
+		if (debugBrain) console.log("Set spread to  :  " + agentObj.spreadAngle);
+	}
+	Act_SetRootRange(trigger, agentObj) {
+		// set root range
+		agentObj.rootRange = int(map(trigger, -1, 1, agentObj.cells.length))
+		if (debugBrain) console.log("Set range to  :  " + agentObj.rootRange)
+	}
+
+	Act_SRoot(trigger, agentObj) {
+		// console.log("SetRoot Trigger " + trigger)
+		if (isNaN(trigger)) {
+			// console.log("ESCAPE")
+			return
 		}
+		let maxRootIdx = agentObj.cells.length
+		let minRootIdx = 0
+		let pickID = int(abs(map(trigger, -1, 1, minRootIdx, maxRootIdx))) // sets the root to look at.
+		agentObj.cellPick = pickID;
+		if (debugBrain) console.log("Set root to  :  " + agentObj.cellPick)
+	}
 
-		Sens_RootMoistureLocal(agentObj){
-			let rootPicVec = grids.moisture.indexToVector(agentObj.roots[agentObj.rootPick])
-			let foundMoisture = grids.moisture.computeLocalMoisture(rootPicVec.x, rootPicVec.y).totalLocalMoisture;
-			if(debugBrain)console.log("Sens_local moisture : " + foundMoisture)
-			return map(foundMoisture, 0,10, -1,1)
-		}
+	// Act_SetGrowAmmt(trigger, agentObj){
+	// 	agentObj.growDistance = int(map(trigger, -1,1, agentObj.minGrowDistance,agentObj.maxGrowDistance)) // sets the root grow distance
+	// 	if(debugBrain)console.log("Set root grow distance  :  " + agentObj.growDistance)
+	// }
 
-		Sens_RootMoistureDir(agentObj){
+	Act_GRoot(trigger, agentObj) {
+		if (trigger > .5) {
+			if (debugBrain) console.log("Action Grow Root  :  ")
+			agentObj.attemptToGrowRoot();
 
-			let rootPicVec = grids.moisture.indexToVector(agentObj.roots[agentObj.rootPick])
-			let foundMoisture = grids.moisture.computeLocalMoisture(rootPicVec.x, rootPicVec.y).highestLocalMoistureDirection;
-			let foundHeading = map(foundMoisture.heading(), -3.1415, 3.1415, -1,1);
-			if(debugBrain)console.log("Sens moisture direction : " + foundHeading)
-			return foundHeading
-		}
-
-		Sens_Age(agentObj) {
-			let ageN = map(agentObj.age, 0, MAX_PLANT_AGE, 0, 1);
-			if(debugBrain)console.log("sens age now : " + ageN);
-			return ageN
-		}
-		Sens_Random(agentObj) {
-			let randN = random(-1, 1)
-			if(debugBrain)console.log("sens random : " + randN );
-			return randN
-		}
-
-		Sens_Energy(agentObj){
-			let energyN = map( agentObj.energy, 0,100, 0, 1);
-			if(debugBrain)console.log("sens energy now : " + energyN );
-			return energyN
-		}
-
-		Sens_Osc(agentObj) {			// oscillator
-			agentObj.internalClock += agentObj.clockSpeed;
-			let newClock = sin(agentObj.internalClock);
-
-			if(debugBrain)console.log("sens Internal Clock : " + newClock );
-			return newClock
-		}
-
-
-		// ACTIONS
-//     #     #####  ####### ### ####### #     #  #####
-//    # #   #     #    #     #  #     # ##    # #     #
-//   #   #  #          #     #  #     # # #   # #
-//  #     # #          #     #  #     # #  #  #  #####
-//  ####### #          #     #  #     # #   # #       #
-//  #     # #     #    #     #  #     # #    ## #     #
-//  #     #  #####     #    ### ####### #     #  #####
-
-
-		Act_OSC(trigger, agentObj) {
-			if(debugBrain)console.log("Set Clock Speed :  " +  trigger );
-			agentObj.clockSpeed = trigger;
-		}
-		Act_Res(trigger, agentObj) {
-			if(debugBrain)console.log("Set responsiveness :  " +  abs(trigger) );
-			agentObj.responsiveness = abs(trigger);
-		}
-
-		Act_SSpread(trigger, agentObj){
-			agentObj.spreadAngle+= trigger
-			if(debugBrain)console.log("Set spread to  :  " +  agentObj.spreadAngle );
-		}
-		Act_SetRootRange(trigger, agentObj){
-			// set root range
-			agentObj.rootRange = int(map(trigger, -1,1,agentObj.roots.length))
-			if(debugBrain)console.log("Set range to  :  " + agentObj.rootRange)
-		}
-
-		Act_SRoot(trigger, agentObj){
-			// console.log("SetRoot Trigger " + trigger)
-			if(isNaN(trigger)){
-				// console.log("ESCAPE")
-				return
-			}
-			let maxRootIdx = agentObj.roots.length
-			let minRootIdx = maxRootIdx - agentObj.rootRange
-			let pickID = int(abs(map(trigger, -1,1,minRootIdx,maxRootIdx))) // sets the root to look at.
-			agentObj.rootPick = pickID;
-			if(debugBrain)console.log("Set root to  :  " + agentObj.rootPick)
-		}
-
-		// Act_SetGrowAmmt(trigger, agentObj){
-		// 	agentObj.growDistance = int(map(trigger, -1,1, agentObj.minGrowDistance,agentObj.maxGrowDistance)) // sets the root grow distance
-		// 	if(debugBrain)console.log("Set root grow distance  :  " + agentObj.growDistance)
-		// }
-
-		Act_GRoot(trigger, agentObj){
-			if(trigger>.5){
-				if(debugBrain)console.log("Action Grow Root  :  ")
-				agentObj.attemptToGrow();
-
-			}
 		}
 	}
+	Act_GBranch(trigger, agentObj) {
+		if (trigger > .5) {
+			if (debugBrain) console.log("Action Grow Branch  :  ")
+			agentObj.attemptToGrowBranch();
+
+		}
+	}
+
+}
 
 
 

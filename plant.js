@@ -1,10 +1,10 @@
 class Plant {
-  constructor(initialPlantX, initialPlantY, plantMatterGrid, earthGrid, rootAngles, genomeSequenceIn) {
+  constructor(initialPlantX, initialPlantY, plantMatterGrid, earthGrid, cellAngles, genomeSequenceIn) {
     this.plantMatterGrid = plantMatterGrid;
     this.earthGrid = earthGrid;
-    this.rootAngles = rootAngles;
+    this.cellAngles = cellAngles;
 
-    this.roots = [];
+    this.cells = [];
 
     // this.makeNewRoot(initialPlantX, initialPlantY);
 
@@ -33,13 +33,12 @@ class Plant {
     this.growDirection = 0;
 
 
-    this.pickRootRange = 50;
     this.rootRange = 10;
 
     this.age = 0;
     this.alive = true;
 
-    this.rootPick = 0;
+    this.cellPick = 0;
 
     for (var intI = 0; intI < this.GSequence.length; intI++) {
       let synapse = new ABrain(this.GSequence[intI]);
@@ -58,14 +57,48 @@ class Plant {
     // this.energy-=.1
   }
 
+  attemptToGrowBranch() {
+    const spreadAngle = this.spreadAngle;
+    const myDegrees = map(random(), 0, 1, 90 - spreadAngle, 90 + spreadAngle);
+    const dirVec = p5.Vector.fromAngle(radians(myDegrees), 2.5);
+    dirVec.x = round(dirVec.x)
+    dirVec.y = round(dirVec.y)
 
-  attemptToGrow() {
+
+    const branchCellVector = this.plantMatterGrid.indexToVector(this.cells[this.cellPick]);
+
+    if (branchCellVector.y < 20) {
+      return
+      console.log(this.cellPick)
+      console.log(branchCellVector)
+    }
+
+
+
+    const nextPossibleCell = p5.Vector.add(branchCellVector, dirVec);
+
+    const nextPossibleIndex = this.plantMatterGrid.xyToIndex(nextPossibleCell.x, nextPossibleCell.y);
+    let earthType = this.earthGrid.get(nextPossibleCell.x, nextPossibleCell.y);
+    if (doesPlantExistAtIndex(nextPossibleIndex) === false && earthType === SoilType.None) {
+      this.makeNewBranch(branchCellVector, nextPossibleCell);
+    }
+  }
+
+  makeNewBranch(fromPos, toPos) {
+    let branchAngleFrom = fromPos.angleBetween(toPos);
+    this.plantMatterGrid.set(toPos.x, toPos.y, this);
+    this.cellAngles.set(toPos.x, toPos.y, branchAngleFrom)
+    this.cells.push(this.plantMatterGrid.xyToIndex(toPos.x, toPos.y));
+  }
+
+
+  attemptToGrowRoot() {
     const spreadAngle = this.spreadAngle;
     const myDegrees = map(random(), 0, 1, 90 + spreadAngle, 90 - spreadAngle);
     const dirVec = p5.Vector.fromAngle(radians(myDegrees), 1);
     dirVec.x = round(dirVec.x)
     dirVec.y = round(dirVec.y)
-    const rootVector = this.plantMatterGrid.indexToVector(this.roots[this.rootPick]);
+    const rootVector = this.plantMatterGrid.indexToVector(this.cells[this.cellPick]);
     const nextPossibleRoot = p5.Vector.add(rootVector, dirVec);
     const nextPossibleIndex = this.plantMatterGrid.xyToIndex(nextPossibleRoot.x, nextPossibleRoot.y);
     let earthType = this.earthGrid.get(nextPossibleRoot.x, nextPossibleRoot.y);
@@ -77,14 +110,14 @@ class Plant {
   makeNewRoot(fromPos, toPos) {
     let rootAngleFrom = fromPos.angleBetween(toPos);
     this.plantMatterGrid.set(toPos.x, toPos.y, this);
-    this.rootAngles.set(toPos.x, toPos.y, rootAngleFrom)
-    this.roots.push(this.plantMatterGrid.xyToIndex(toPos.x, toPos.y));
+    this.cellAngles.set(toPos.x, toPos.y, rootAngleFrom)
+    this.cells.push(this.plantMatterGrid.xyToIndex(toPos.x, toPos.y));
 
   }
 
   // Returns true if the plant has grown at all. Else returns false.
   hasGrown() {
-    return this.roots.length > 2;
+    return this.cells.length > 2;
   }
 }
 
@@ -97,17 +130,32 @@ function searchForAppropriatePlantY(x, earthGrid) {
     y += 1;
     tries++;
   }
-  return y;
+  return y - 1;
 }
 
 // Spawns a plant, given an earth grid.
-function spawnPlant(earthGrid, rootAngles, genomeSequence) {
-  const plantX = int(random(earthGrid.width));
+function spawnPlant(earthGrid, cellAngles, genomeSequence) {
+  const plantX = int(random(20, earthGrid.width - 20));
   const plantY = searchForAppropriatePlantY(plantX, earthGrid);
-  return new Plant(plantX, plantY, grids.plantMatter, earthGrid, rootAngles, genomeSequence);
+  return new Plant(plantX, plantY, grids.plantMatter, earthGrid, cellAngles, genomeSequence);
 }
 
-function computeNormalizedGrowthPotential(index, earthGrid, plantMatterGrid) {
+
+
+
+function computeNormalizedBranchGrowthPotential(index, earthGrid, plantMatterGrid) {
+  const [x, y] = earthGrid.indexToXY(index);
+  let value = 0;
+  earthGrid.forEachXYNeighborValue(x, y, (nx, ny, soilType) => {
+    if (soilType === SoilType.None) {
+      value += 1;
+    }
+  });
+
+  return value / 8.0;
+}
+
+function computeNormalizedRootGrowthPotential(index, earthGrid, plantMatterGrid) {
   const [x, y] = earthGrid.indexToXY(index);
   let value = 0;
   earthGrid.forEachXYNeighborValue(x, y, (nx, ny, soilType) => {

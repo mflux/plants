@@ -46,8 +46,8 @@ class Grid {
 
   // Loop over each x y, returning its value as well.
   forEachXYValue(callback) {
-    for (let y = 0; y < this.height; y++){
-      for (let x = 0; x < this.width; x++){
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
         callback(x, y, this.get(x, y));
       }
     }
@@ -59,9 +59,9 @@ class Grid {
   forEachXYNeighborValue(x, y, callback) {
     x = int(x);
     y = int(y);
-    for (let oy = -1; oy <= 1; oy++){
+    for (let oy = -1; oy <= 1; oy++) {
       const cy = y + oy;
-      for (let ox = -1; ox <= 1; ox++){
+      for (let ox = -1; ox <= 1; ox++) {
         const cx = x + ox;
         if (cx < 0 || cy < 0) {
           continue;
@@ -79,7 +79,7 @@ class Grid {
 
   // Loop over each index, returning its value as well.
   forEachIndexValue(callback) {
-    for (let i = 0; i < this.area; i++){
+    for (let i = 0; i < this.area; i++) {
       callback(i, this.cells[i]);
     }
   }
@@ -94,8 +94,8 @@ class Grid {
   // Replace the grid value based on a callback.
   replaceEachXYValue(callback) {
     const newCells = [];
-    for (let y = 0; y < this.height; y++){
-      for (let x = 0; x < this.width; x++){
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
         const index = this.xyToIndex(x, y);
         const prevValue = this.cells[index];
         const newValue = callback(x, y, prevValue);
@@ -114,9 +114,9 @@ function renderGrid(grid, colorFunc) {
       return;
     }
     pixelIndex = gridIndex * 4;
-    pixels[pixelIndex] = red(c);
-    pixels[pixelIndex+1] = green(c);
-    pixels[pixelIndex+2] = blue(c);
-    pixels[pixelIndex+3] = alpha(c);
+    simViewGraphics.pixels[pixelIndex] = red(c);
+    simViewGraphics.pixels[pixelIndex + 1] = green(c);
+    simViewGraphics.pixels[pixelIndex + 2] = blue(c);
+    simViewGraphics.pixels[pixelIndex + 3] = alpha(c);
   });
 }
