@@ -98,8 +98,8 @@ function rewardFunction(plant) {
     minY = min(y, minY);
     maxY = max(y, maxY);
   });
-  const aboveGroundDelta = maxY - minY;
-  return totalCellsResult + aboveGroundCells.length * 3 + aboveGroundDelta * 100;
+  const aboveGroundDelta = aboveGroundCells.length > 0 ? maxY - minY : 0;
+  return totalCellsResult + aboveGroundCells.length * 2 + aboveGroundDelta * 10;
 }
 
 function finishEvolution(geneSequence, reward) {
