@@ -139,7 +139,7 @@ function renderScene() {
 
     if (value != null) {
       const age = grids.cellAge.cells[index];
-      const normAge = age * 4 / MAX_PLANT_AGE;
+      const normAge = age / 1000;
       if (grids.earth.cells[index] === SoilType.None) {
         return lerpColor(startBranchColor, endBranchColor, normAge);
       } else {
