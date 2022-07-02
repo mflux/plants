@@ -156,8 +156,8 @@ class ABrain {
 	}
 
 	Sens_Energy(agentObj) {
-		let energyN = map(agentObj.energy, 0, 100, 0, 1);
-		if (debugBrain) console.log("sens energy now : " + energyN);
+		let energyN = map(agentObj.availableMoistureForGrowth, 0, 10000, 0, 1);
+		if (debugBrain) console.log("sens available moisture now : " + energyN);
 		return energyN;
 	}
 

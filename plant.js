@@ -22,7 +22,7 @@ class Plant {
     this.InternalNeurons = [0, 0, 0, 0, 0, 0];
 
     //  TODO(Harvey): Read by brain but currently not modified.
-    this.energy = 10;
+    // this.energy = 10;
     this.spreadAngle = 100;
 
     this.minGrowDistance = 1;
