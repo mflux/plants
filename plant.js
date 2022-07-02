@@ -117,6 +117,7 @@ class Plant {
     const index = this.grids.plantMatter.xyToIndex(toPos.x, toPos.y);
     this.grids.plantMatter.cells[index] = this;
     this.grids.cellAngles.cells[index] = angle;
+    this.grids.cellAge.cells[index] = this.cells.length;
     this.cells.push(index);
     this.availableMoistureForGrowth -= 1;
   }

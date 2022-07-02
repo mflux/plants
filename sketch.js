@@ -84,15 +84,20 @@ function draw() {
     }
   });
 
+  const startBranchColor = color(35, 54, 8);
+  const endBranchColor = color(94, 230, 16);
+  const startRootColor = color(61, 6, 18);
+  const endRootColor = color(161, 122, 32);
   renderGrid(grids.plantMatter, (index, value) => {
 
 
     if (value != null) {
-
+      const age = grids.cellAge.cells[index];
+      const normAge = age * 4 / MAX_PLANT_AGE;
       if (grids.earth.cells[index] === SoilType.None) {
-        return color(0, 200, 0);
+        return lerpColor(startBranchColor, endBranchColor, normAge);
       } else {
-        return color(200, 200, 200);
+        return lerpColor(startRootColor, endRootColor, normAge);
       }
 
     }

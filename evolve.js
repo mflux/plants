@@ -26,6 +26,7 @@ function remakeGrids() {
   grids.moisture = generateMoistureGrid(SIM_WIDTH, SIM_HEIGHT);
   grids.plantMatter = new PlantMatter(SIM_WIDTH, SIM_HEIGHT);
   grids.cellAngles = new ValueGrid(SIM_WIDTH, SIM_HEIGHT);
+  grids.cellAge = new ValueGrid(SIM_WIDTH, SIM_HEIGHT, 0);
 }
 
 function restartEvolution() {
@@ -34,7 +35,7 @@ function restartEvolution() {
   // create one plant for testing
   let GSEQ = makeRandomGeneSequence();
 
-  // GSEQ = ['15FF5D04', '7968E1E4', '799697C8', '8BD5206C', 'B93648FE', 'AB7E81BC', '078FC9BA', 'D915F9DA', '8E9E6D2B', 'D3472F8C', '3F8A2BE7', 'A0A1FDBA', '2B369F46', 'BC7187BE'];
+  GSEQ = ['CA7C2E07', 'A748098E', '799697C8', '78BCF5CE', '65019568', 'B6C69A8E', '2E2E26E1', 'F73A3E36', '5CD68946', '0176595D', '3F8A2BE7', 'B91E9E9A', '03F7D7CA', '80B2A7B8'];
 
 
   if (bestResult !== undefined) {
