@@ -226,7 +226,7 @@ class ABrain {
 		let minRootIdx = 0;
 		let pickID = int(abs(map(trigger, -1, 1, minRootIdx, maxRootIdx))); // sets the root to look at.
 		pickID = constrain(pickID, minRootIdx, maxRootIdx);
-		agentObj.cellPick = aboveGroundCells[pickID];
+		agentObj.cellPick = agentObj.cells.indexOf(aboveGroundCells[pickID]);
 		if (debugBrain) console.log("Set root to  :  " + agentObj.cellPick)
 	}
 

@@ -63,7 +63,7 @@ function setup() {
   const entryLabel = createP("Start With Sequence");
   entryLabel.position(300, 0);
   dom_sequenceEntry = createInput("");
-  dom_sequenceEntry.position(460, 13);
+  dom_sequenceEntry.position(300, 40);
   dom_sequenceEntry.input(onSequenceEntered);
 }
 
@@ -86,9 +86,8 @@ function draw() {
   Reward:           ${rewardFunction(PP)}
   ↪ Cells:            ${PP.cells.length}
   ↪ A-Moisture:       ${PP.availableMoistureForGrowth}
-  Root pick:        ${PP.cellPick}
+  Cell pick:        ${PP.cellPick}
   Plant age:        ${PP.age}
-  Internal neurons: ${PP.InternalNeurons}
   Frame time:       ${timeDelta}
   </pre>
   `);
