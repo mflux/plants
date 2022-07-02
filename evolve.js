@@ -3,6 +3,9 @@ const GIVE_UP_AGE = 20;
 // Resets evolution upon reaching this age.
 var MAX_PLANT_AGE = 50000;
 
+// If a plant hasn't grown for this many steps, stop stepping.
+const PLANT_AGE_TIMEOUT = 1000;
+
 let PP;// one plant for testing, later make an array instead
 
 // A dict of grids, each representing a grid of data.
@@ -55,7 +58,7 @@ function stepEvolution() {
     PP = restartEvolution();
   }
 
-  if (PP.age > MAX_PLANT_AGE) {
+  if (PP.age > MAX_PLANT_AGE || (PP.age - PP.lastGrownAge) > PLANT_AGE_TIMEOUT) {
     if (bestResult === undefined || rewardFunction(PP) > bestResult.reward) {
       const result = finishEvolution(PP.GSequence, rewardFunction(PP));
       if (bestResult === undefined) {

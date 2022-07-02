@@ -36,6 +36,7 @@ class Plant {
 
     this.age = 0;
     this.alive = true;
+    this.lastGrownAge = 0;
 
     this.cellPick = 0;
 
@@ -50,14 +51,10 @@ class Plant {
     // Moisture becomes depleted for each cell consuming.
     this.cells.forEach(index => {
       this.availableMoistureForGrowth -= 0.0001;
-      if (this.grids.moisture.cells[index] > 0) {
-        const absorbed = this.grids.moisture.cells[index];
-        this.availableMoistureForGrowth += absorbed;
-        this.grids.moisture.cells[index] -= absorbed * 0.2;
-      }
-      if (this.grids.moisture.cells[index] < 0) {
-        this.grids.moisture.cells[index] = 0;
-      }
+      this.absorbMoisture(index);
+      this.grids.moisture.forEachIndexNeighborValue(index, (nIndex) => {
+        this.absorbMoisture(nIndex);
+      });
     });
 
     // this.grids.moisture.cells.forEach((v, index) => {
@@ -67,6 +64,17 @@ class Plant {
     // });
 
     this.availableMoistureForGrowth = max(this.availableMoistureForGrowth, 0);
+  }
+
+  absorbMoisture(index) {
+    if (this.grids.moisture.cells[index] > 0) {
+      const absorbed = this.grids.moisture.cells[index] * 0.05;
+      this.availableMoistureForGrowth += absorbed;
+      this.grids.moisture.cells[index] -= absorbed * 0.5;
+    }
+    if (this.grids.moisture.cells[index] < 0) {
+      this.grids.moisture.cells[index] = 0;
+    }
   }
 
   runBrain() {
@@ -132,6 +140,7 @@ class Plant {
     this.grids.cellAge.cells[index] = this.cells.length;
     this.cells.push(index);
     this.availableMoistureForGrowth -= 0.01;
+    this.lastGrownAge = this.age;
   }
 
   // Returns true if the plant has grown at all. Else returns false.

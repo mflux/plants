@@ -77,6 +77,27 @@ class Grid {
     }
   }
 
+  forEachIndexNeighborValue(index, callback) {
+    const [x, y] = this.indexToXY(index);
+    for (let oy = -1; oy <= 1; oy++) {
+      const cy = y + oy;
+      for (let ox = -1; ox <= 1; ox++) {
+        const cx = x + ox;
+        if (cx < 0 || cy < 0) {
+          continue;
+        }
+        if (cx >= this.width || cy >= this.height) {
+          continue;
+        }
+        if (cx === x && cy === y) {
+          continue;
+        }
+        const outIndex = this.xyToIndex(cx, cy);
+        callback(outIndex, this.cells[outIndex]);
+      }
+    }
+  }
+
   // Loop over each index, returning its value as well.
   forEachIndexValue(callback) {
     for (let i = 0; i < this.area; i++) {
