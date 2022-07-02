@@ -17,7 +17,7 @@ var debugBrain = false;
 
 let STEPS_PER_FRAME = 1;
 
-let mutation_ammount = 10;
+let mutation_amount = 4;
 
 let dom_stepsPerFrameSlider;
 let dom_debugText;
@@ -72,7 +72,7 @@ function setup() {
 
   const sliderLabel2 = createP("Mutation Amount");
   sliderLabel2.position(260, 0);
-  dom_mutateSlider = createSlider(0, 10, 10, 1);
+  dom_mutateSlider = createSlider(0, 10, mutation_amount, 1);
   dom_mutateSlider.position(400, 15);
 
 

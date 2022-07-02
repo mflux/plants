@@ -138,7 +138,7 @@ function copySequenceToClipboard(seq) {
 function mutateGeneSequence(geneIn) {
   const geneOut = geneIn.slice();
 
-  let randomRun = round(random(mutation_ammount));
+  let randomRun = round(random(mutation_amount));
   // adjust a random number of genes.
   for (let index = 0; index < randomRun; index++) {
     let randPick = int(random(geneIn.length));
