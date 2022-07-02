@@ -121,7 +121,7 @@ function draw() {
   `);
 
   if (FastMode) {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 1000; i++) {
       stepEvolution();
     }
   }

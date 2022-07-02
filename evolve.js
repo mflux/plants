@@ -1,7 +1,7 @@
 const GIVE_UP_AGE = 20;
 
 // Resets evolution upon reaching this age.
-var MAX_PLANT_AGE = 10000;
+var MAX_PLANT_AGE = 50000;
 
 let PP;// one plant for testing, later make an array instead
 
@@ -35,7 +35,7 @@ function restartEvolution() {
   // create one plant for testing
   let GSEQ = makeRandomGeneSequence();
 
-  GSEQ = ['CA7C2E07', 'A748098E', '799697C8', '78BCF5CE', '65019568', 'B6C69A8E', '2E2E26E1', 'F73A3E36', '5CD68946', '0176595D', '3F8A2BE7', 'B91E9E9A', '03F7D7CA', '80B2A7B8'];
+  GSEQ = ['CA7C2E07', 'A748098E', '90F50EB8', '4D0F2CC4', '2D0C4ED4', '54E3D98C', '1257A868', 'F73A3E36', '1F8FA904', '87EADE94', '3F8A2BE7', 'C9684926', 'F5493544', '0E81FAEA'];
 
 
   if (bestResult !== undefined) {
