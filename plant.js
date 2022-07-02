@@ -50,7 +50,7 @@ class Plant {
   stepSim() {
     // Moisture becomes depleted for each cell consuming.
     this.cells.forEach(index => {
-      this.availableMoistureForGrowth -= 0.01;
+      this.availableMoistureForGrowth -= 0.04;
       this.absorbMoisture(index);
       this.grids.moisture.forEachIndexNeighborValue(index, (nIndex) => {
         this.absorbMoisture(nIndex);

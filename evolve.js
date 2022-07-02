@@ -91,7 +91,15 @@ function rewardFunction(plant) {
   let aboveGroundCells = plant.cells.filter(index => {
     return plant.grids.earth.cells[index] === SoilType.None;
   });
-  return totalCellsResult + aboveGroundCells.length * 6;
+  let minY = 1000000;
+  let maxY = 0;
+  aboveGroundCells.forEach(index => {
+    const [x, y] = grids.earth.indexToXY(index);
+    minY = min(y, minY);
+    maxY = max(y, maxY);
+  });
+  const aboveGroundDelta = maxY - minY;
+  return totalCellsResult + aboveGroundCells.length * 3 + aboveGroundDelta * 100;
 }
 
 function finishEvolution(geneSequence, reward) {
