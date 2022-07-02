@@ -49,18 +49,18 @@ class Plant {
   stepSim() {
     // Moisture becomes depleted for each cell consuming.
     this.cells.forEach(index => {
-      this.availableMoistureForGrowth -= 0.1;
+      this.availableMoistureForGrowth -= 0.001;
       if (this.grids.moisture.cells[index] > 0) {
-        this.availableMoistureForGrowth += 0.3;
+        const absorbed = min(0.1, this.grids.moisture.cells[index]);
+        this.availableMoistureForGrowth += absorbed;
+        this.grids.moisture.cells[index] -= absorbed * 0.2;
       }
-      this.grids.moisture.cells[index] -= 0.03;
       if (this.grids.moisture.cells[index] < 0) {
         this.grids.moisture.cells[index] = 0;
       }
     });
-    if (this.availableMoistureForGrowth < 0) {
-      this.availableMoistureForGrowth = 0;
-    }
+
+    this.availableMoistureForGrowth = max(this.availableMoistureForGrowth, 0);
   }
 
   runBrain() {
@@ -74,7 +74,7 @@ class Plant {
   }
 
   attemptToGrowBranch() {
-    if (this.availableMoistureForGrowth < 0) {
+    if (this.availableMoistureForGrowth < 0.01) {
       return;
     }
     const spreadAngle = this.spreadAngle;
@@ -101,7 +101,7 @@ class Plant {
   }
 
   attemptToGrowRoot() {
-    if (this.availableMoistureForGrowth < 0) {
+    if (this.availableMoistureForGrowth < 0.01) {
       return;
     }
     const spreadAngle = this.spreadAngle;
@@ -125,7 +125,7 @@ class Plant {
     this.grids.cellAngles.cells[index] = angle;
     this.grids.cellAge.cells[index] = this.cells.length;
     this.cells.push(index);
-    this.availableMoistureForGrowth -= 1;
+    this.availableMoistureForGrowth -= 0.01;
   }
 
   // Returns true if the plant has grown at all. Else returns false.

@@ -35,10 +35,7 @@ function restartEvolution() {
 
   // create one plant for testing
   let GSEQ = makeRandomGeneSequence();
-  // GSEQ = ['A3452258', '5D89E5BC', 'F1FA113F', 'FC9DE611', 'C8CB5322', '5F9AE8B8', 'C51B5CB5', '738BAE12', 'C531F3B9', 'E4B51C58', '9156A703', '680FBB7C', '0E5E4A89', 'AAC1F3F8', '121E4452', 'E1D085CC', '39BFC2BD'];
-  // GSEQ = ['CA7C2E07', 'A748098E', '3AFE3104', '4D0F2CC4', 'AE097594', '54E3D98C', '1257A868', 'F73A3E36', '1F8FA904', '87EADE94', '3F8A2BE7', 'C9684926', 'F5493544', 'F085339A'];
-  // Different strategy?
-  // GSEQ = ['4CF613F4', '7DC8148E', 'E79D827E', '6021B314', 'BFFFC33C', '127F32DC', '78D54861', '038B8288', '5160B5A4', '89C7A0D8', '3F34BE6A', '1F114D53', '67D77482', 'A1687B8B']
+  // GSEQ =  ['086FF138', '24685D0A', 'A5A3D64A', '8152A0F6', 'FF301698', '0E3613D6', 'C6B2A07C', 'D03FE1CF', 'C9AA5034', 'FE9246D2', 'E3D6BEAF', '251EF3E6', '92904D48', 'A9D8B1C6', '9CAC3435', '98BB88C2'];
 
   if (bestResult !== undefined) {
     GSEQ = mutateGeneSequence(bestResult.geneSequence);
@@ -77,7 +74,10 @@ function stepEvolution() {
 
 function rewardFunction(plant) {
   let totalCellsResult = plant.cells.length;
-  return totalCellsResult;
+  let aboveGroundCells = plant.cells.filter(index => {
+    return plant.grids.earth.cells[index] === SoilType.None;
+  });
+  return totalCellsResult + aboveGroundCells.length * 3;
 }
 
 function finishEvolution(geneSequence, reward) {
@@ -98,17 +98,26 @@ function generateResultsPage() {
   const resultsList = document.getElementById("results");
   resultsList.innerHTML = "";
   results.forEach(result => {
+    const stringifiedSequence = JSON.stringify(result.geneSequence);
     const resultPanel = document.createElement("div");
-    // const img = createImage(width, height);
-    // img.copy(get());
+
+    const copyButton = document.createElement("button");
+    copyButton.onclick = function () {
+      copySequenceToClipboard(stringifiedSequence);
+    }
+    copyButton.innerText = "📋";
     resultPanel.innerHTML = `
-      <pre>${JSON.stringify(result.geneSequence)}</pre>
+      <pre>${stringifiedSequence}</pre>
       <div>Reward: ${result.reward}</div>
     `;
+    resultPanel.appendChild(copyButton);
     resultPanel.appendChild(result.image);
     resultsList.appendChild(resultPanel);
   });
+}
 
+function copySequenceToClipboard(seq) {
+  navigator.clipboard.writeText(seq);
 }
 
 // Returns a copy of geneIn with one modified synapse.
