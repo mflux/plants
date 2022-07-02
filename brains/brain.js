@@ -40,7 +40,8 @@ class ABrain {
 			this.Act_GBranch,
 			this.Act_SRoot,
 			this.Act_SSpread,
-			this.Act_SetRootRange
+			this.Act_SetRootRange,
+			this.Act_KillCell,
 		];
 
 		this.sink_id = this.sink_id % this.actions.length;
@@ -224,6 +225,12 @@ class ABrain {
 			if (debugBrain) console.log("Action Grow Branch  :  ")
 			agentObj.attemptToGrowBranch();
 
+		}
+	}
+
+	Act_KillCell(trigger, agentObj) {
+		if (trigger > 0.5) {
+			agentObj.attemptToKillCell();
 		}
 	}
 

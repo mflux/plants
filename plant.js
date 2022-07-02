@@ -132,6 +132,10 @@ class Plant {
   hasGrown() {
     return this.cells.length > 2;
   }
+
+  attemptToKillCell() {
+    this.grids.plantMatter.cells[this.cellPick] = null;
+  }
 }
 
 // Looks for the nearest soft soil, given an x and earth grid.
