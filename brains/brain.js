@@ -122,7 +122,7 @@ class ABrain {
 
 		let angleHere = agentObj.grids.cellAngles[agentObj.cellPick]
 
-		let moveDir = map(angleHere, -3.1415, 3.1415, -1, 1);
+		let moveDir = map(angleHere, -Math.PI, Math.PI, -1, 1);
 		if (debugBrain) console.log('sens move direction  : ' + moveDir)
 		return moveDir;
 	}
@@ -139,7 +139,7 @@ class ABrain {
 
 		let rootPicVec = grids.moisture.indexToVector(agentObj.cells[agentObj.cellPick]);
 		let foundMoisture = grids.moisture.computeLocalMoisture(rootPicVec.x, rootPicVec.y).highestLocalMoistureDirection;
-		let foundHeading = map(foundMoisture.heading(), -3.1415, 3.1415, -1, 1);
+		let foundHeading = map(foundMoisture.heading(), -Math.PI, Math.PI, -1, 1);
 		if (debugBrain) console.log("Sens moisture direction : " + foundHeading)
 		return foundHeading;
 	}
@@ -219,16 +219,14 @@ class ABrain {
 
 
 	Act_SBranch(trigger, agentObj) {
+		if (isNaN(trigger)) {
+			return;
+		}
 
 		let aboveGroundCells = agentObj.cells.filter(index => {
 			return agentObj.grids.earth.cells[index] === SoilType.None;
 		});
 
-		// console.log("SetRoot Trigger " + trigger)
-		if (isNaN(trigger)) {
-			// console.log("ESCAPE")
-			return;
-		}
 		let maxRootIdx = aboveGroundCells.length;
 		let minRootIdx = 0;
 		let pickID = int(abs(map(trigger, -1, 1, minRootIdx, maxRootIdx))); // sets the root to look at.
