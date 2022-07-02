@@ -17,11 +17,14 @@ var debugBrain = false;
 
 let STEPS_PER_FRAME = 1;
 
+let mutation_ammount = 10;
+
 let dom_stepsPerFrameSlider;
 let dom_debugText;
 let dom_fastModeToggle;
 let dom_fastForwardButton;
 let dom_sequenceEntry;
+let dom_mutateSlider;
 
 var FastMode = false;
 
@@ -61,16 +64,26 @@ function setup() {
   dom_debugText.position(10, 40);
 
   const entryLabel = createP("Start With Sequence");
-  entryLabel.position(300, 0);
+  entryLabel.position(300, 20);
   dom_sequenceEntry = createInput("");
-  dom_sequenceEntry.position(300, 40);
+  dom_sequenceEntry.position(300, 60);
   dom_sequenceEntry.input(onSequenceEntered);
+
+
+  const sliderLabel2 = createP("Mutation Ammount");
+  sliderLabel2.position(260, 0);
+  dom_mutateSlider = createSlider(0, 10, 10, 1);
+  dom_mutateSlider.position(400, 15);
+
+
 }
 
 let lastStepTime = 0;
 
 function draw() {
   STEPS_PER_FRAME = dom_stepsPerFrameSlider.value();
+  mutation_ammount = dom_mutateSlider.value();
+
 
   for (let i = 0; i < STEPS_PER_FRAME; i++) {
     stepEvolution();
