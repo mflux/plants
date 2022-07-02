@@ -40,9 +40,13 @@ class ABrain {
 			this.Act_GBranch,
 			this.Act_SRoot,
 			this.Act_SSpread,
-			this.Act_SetRootRange,
 			this.Act_KillCell,
+			this.Act_SBranch
 		];
+
+		//// unused actions:
+		//		this.Act_SetRootRange,
+		///
 
 		this.sink_id = this.sink_id % this.actions.length;
 
@@ -115,10 +119,14 @@ class ABrain {
 	}
 
 	Sens_MoveDirection(agentObj) {
-		let moveDir = map(agentObj.growDirection, -3.1415, 3.1415, -1, 1);
+
+		let angleHere = agentObj.grids.cellAngles[agentObj.cellPick]
+
+		let moveDir = map(angleHere, -3.1415, 3.1415, -1, 1);
 		if (debugBrain) console.log('sens move direction  : ' + moveDir)
 		return moveDir;
 	}
+
 
 	Sens_RootMoistureLocal(agentObj) {
 		let rootPicVec = grids.moisture.indexToVector(agentObj.cells[agentObj.cellPick])
@@ -189,11 +197,11 @@ class ABrain {
 		agentObj.spreadAngle += trigger;
 		if (debugBrain) console.log("Set spread to  :  " + agentObj.spreadAngle);
 	}
-	Act_SetRootRange(trigger, agentObj) {
-		// set root range
-		agentObj.rootRange = int(map(trigger, -1, 1, agentObj.cells.length));
-		if (debugBrain) console.log("Set range to  :  " + agentObj.rootRange)
-	}
+	// Act_SetRootRange(trigger, agentObj) {
+	// 	// set root range
+	// 	agentObj.rootRange = int(map(trigger, -1, 1, agentObj.cells.length));
+	// 	if (debugBrain) console.log("Set range to  :  " + agentObj.rootRange)
+	// }
 
 	Act_SRoot(trigger, agentObj) {
 		// console.log("SetRoot Trigger " + trigger)
@@ -208,6 +216,27 @@ class ABrain {
 		agentObj.cellPick = pickID;
 		if (debugBrain) console.log("Set root to  :  " + agentObj.cellPick)
 	}
+
+
+	Act_SBranch(trigger, agentObj) {
+
+		let aboveGroundCells = agentObj.cells.filter(index => {
+			return agentObj.grids.earth.cells[index] === SoilType.None;
+		});
+
+		// console.log("SetRoot Trigger " + trigger)
+		if (isNaN(trigger)) {
+			// console.log("ESCAPE")
+			return;
+		}
+		let maxRootIdx = aboveGroundCells.length;
+		let minRootIdx = 0;
+		let pickID = int(abs(map(trigger, -1, 1, minRootIdx, maxRootIdx))); // sets the root to look at.
+		pickID = constrain(pickID, minRootIdx, maxRootIdx);
+		agentObj.cellPick = aboveGroundCells[pickID];
+		if (debugBrain) console.log("Set root to  :  " + agentObj.cellPick)
+	}
+
 
 	// Act_SetGrowAmmt(trigger, agentObj){
 	// 	agentObj.growDistance = int(map(trigger, -1,1, agentObj.minGrowDistance,agentObj.maxGrowDistance)) // sets the root grow distance
