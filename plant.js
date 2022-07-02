@@ -50,18 +50,12 @@ class Plant {
   stepSim() {
     // Moisture becomes depleted for each cell consuming.
     this.cells.forEach(index => {
-      this.availableMoistureForGrowth -= 0.001;
+      this.availableMoistureForGrowth -= 0.01;
       this.absorbMoisture(index);
       this.grids.moisture.forEachIndexNeighborValue(index, (nIndex) => {
         this.absorbMoisture(nIndex);
       });
     });
-
-    // this.grids.moisture.cells.forEach((v, index) => {
-    //   if (random() > 0.95) {
-    //     this.grids.moisture.cells[index] += random(0, 0.001);
-    //   }
-    // });
 
     this.availableMoistureForGrowth = max(this.availableMoistureForGrowth, 0);
   }
@@ -70,7 +64,7 @@ class Plant {
     if (this.grids.moisture.cells[index] > 0) {
       const absorbed = this.grids.moisture.cells[index] * 0.05;
       this.availableMoistureForGrowth += absorbed;
-      this.grids.moisture.cells[index] -= absorbed * 0.5;
+      this.grids.moisture.cells[index] -= absorbed * 0.2;
     }
     if (this.grids.moisture.cells[index] < 0) {
       this.grids.moisture.cells[index] = 0;
