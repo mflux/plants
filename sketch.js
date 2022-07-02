@@ -52,7 +52,7 @@ function setup() {
 
   const sliderLabel = createP("Steps Per Frame");
   sliderLabel.position(10, 0);
-  dom_stepsPerFrameSlider = createSlider(1, 1000, 1, 1);
+  dom_stepsPerFrameSlider = createSlider(0, 1000, 1, 1);
   dom_stepsPerFrameSlider.position(120, 15);
 
   dom_fastForwardButton = createButton("Advance 100,000 Steps");
@@ -70,7 +70,7 @@ function setup() {
   dom_sequenceEntry.input(onSequenceEntered);
 
 
-  const sliderLabel2 = createP("Mutation Ammount");
+  const sliderLabel2 = createP("Mutation Amount");
   sliderLabel2.position(260, 0);
   dom_mutateSlider = createSlider(0, 10, 10, 1);
   dom_mutateSlider.position(400, 15);
