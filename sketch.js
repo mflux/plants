@@ -10,7 +10,7 @@
   It gets converted into a synapse (brain).
 */
 
-const SIM_WIDTH = 256;
+const SIM_WIDTH = 128;
 const SIM_HEIGHT = 256;
 
 var debugBrain = false;
