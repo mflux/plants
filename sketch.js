@@ -34,8 +34,6 @@ function toggleFastMode() {
   }
 }
 
-var simViewGraphics;
-
 // P5.js sketch.
 function setup() {
   frameRate(10000);
@@ -45,9 +43,8 @@ function setup() {
 
   pixelDensity(1);
   noSmooth();
-  simViewGraphics = createGraphics(SIM_WIDTH, SIM_HEIGHT);
-  const canvas = createCanvas(SIM_WIDTH * 4, SIM_HEIGHT * 4);
-  // canvas.style("transform", "scale(2) translate(25%, 25%)");
+  const canvas = createCanvas(SIM_WIDTH, SIM_HEIGHT);
+  canvas.style("transform", "scale(4) translate(25%, 25%)");
   canvas.style("image-rendering", "pixelated");
 
   remakeGrids();
@@ -69,10 +66,10 @@ let lastStepTime = 0;
 
 function draw() {
   stepEvolution();
-  simViewGraphics.fill(0)
-  simViewGraphics.background(1, 1, 1);
+  fill(0)
+  background(1, 1, 1);
   // Place pixels based on the grid.
-  simViewGraphics.loadPixels();
+  loadPixels();
 
   renderGrid(grids.earth, (index, value) => {
     switch (value) {
@@ -103,8 +100,7 @@ function draw() {
     }
   });
 
-  simViewGraphics.updatePixels();
-  image(simViewGraphics, 0, 0, width, height)
+  updatePixels();
 
   timeDelta = millis() - lastStepTime;
   lastStepTime = millis();

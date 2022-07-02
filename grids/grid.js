@@ -114,9 +114,9 @@ function renderGrid(grid, colorFunc) {
       return;
     }
     pixelIndex = gridIndex * 4;
-    simViewGraphics.pixels[pixelIndex] = red(c);
-    simViewGraphics.pixels[pixelIndex + 1] = green(c);
-    simViewGraphics.pixels[pixelIndex + 2] = blue(c);
-    simViewGraphics.pixels[pixelIndex + 3] = alpha(c);
+    pixels[pixelIndex] = red(c);
+    pixels[pixelIndex + 1] = green(c);
+    pixels[pixelIndex + 2] = blue(c);
+    pixels[pixelIndex + 3] = alpha(c);
   });
 }
