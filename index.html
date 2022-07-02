@@ -10,6 +10,7 @@
         padding: 0;
         margin: 0;
         background: #dfdfdf;
+        overflow: hidden;
       }
 
       main {
@@ -18,7 +19,15 @@
         height: 1024px;
       }
 
-      .results-list {}
+      .results-list {
+        position: absolute;
+        background-color: white;
+        top: 0%;
+        left: 50%;
+        height: 100%;
+        overflow-y: scroll;
+        overflow-x: hidden;
+      }
     </style>
     <script src="p5.min.js"></script>
     <script src="test.js"></script>
