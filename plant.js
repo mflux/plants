@@ -133,22 +133,14 @@ class Plant {
   }
 
   makeNewCell(fromPos, toPos) {
-    let distN = fromPos.dist(toPos);
     let angle = fromPos.angleBetween(toPos);
-
-    for (let idx = 0; idx < distN; idx++) {
-      let inc = idx / distN;
-      let midPos = p5.Vector.lerp(fromPos, toPos, inc);
-
-      const index = this.grids.plantMatter.xyToIndex(midPos.x, midPos.y);
-      this.grids.plantMatter.cells[index] = this;
-      this.grids.cellAngles.cells[index] = angle;
-      this.grids.cellAge.cells[index] = this.cells.length;
-      this.cells.push(index);
-      this.availableMoistureForGrowth -= 0.01;
-      this.lastGrownAge = this.age;
-
-    }
+    const index = this.grids.plantMatter.xyToIndex(toPos.x, toPos.y);
+    this.grids.plantMatter.cells[index] = this;
+    this.grids.cellAngles.cells[index] = angle;
+    this.grids.cellAge.cells[index] = this.cells.length;
+    this.cells.push(index);
+    this.availableMoistureForGrowth -= 0.01;
+    this.lastGrownAge = this.age;
   }
 
   // Returns true if the plant has grown at all. Else returns false.
