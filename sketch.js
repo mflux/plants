@@ -86,7 +86,7 @@ function draw() {
   Reward:           ${rewardFunction(PP)}
   ↪ Cells:            ${PP.cells.length}
   ↪ A-Moisture:       ${PP.availableMoistureForGrowth}
-  Root pick:        ${PP.cellPick}
+  Cell pick:        ${PP.cellPick}
   Plant age:        ${PP.age}
   Internal neurons: ${PP.InternalNeurons}
   Frame time:       ${timeDelta}
