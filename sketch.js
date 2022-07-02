@@ -102,7 +102,7 @@ function renderScene() {
         return color(255, 255, 255);
       case SoilType.Soft:
         // Color soil differently depending on moisture.
-        const moisture = grids.moisture.cells[index];
+        const moisture = grids.moisture.cells[index] / 10;
         return lerpColor(drySoilColor, wetSoilColor, moisture);
       case SoilType.Hard:
         return color(54, 52, 51);

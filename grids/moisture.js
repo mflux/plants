@@ -41,7 +41,7 @@ function generateMoistureGrid(width, height) {
   const moistureGrid = new Moisture(width, height, 0.0);
   const moistureNoiseScale = 0.003;
   moistureGrid.replaceEachXYValue((x, y, _) => {
-    const v = noise(x * moistureNoiseScale * 10, y * moistureNoiseScale * 20);
+    const v = noise(x * moistureNoiseScale * 10, y * moistureNoiseScale * 20) * 10;
     const soilType = grids.earth.get(x, y);
     if (soilType == SoilType.Soft) {
       return v;
