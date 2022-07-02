@@ -6,7 +6,7 @@ class Plant {
 
     // this.makeNewRoot(initialPlantX, initialPlantY);
 
-    this.makeNewRoot(createVector(initialPlantX, initialPlantY), createVector(initialPlantX, initialPlantY + 1));
+    this.makeNewCell(createVector(initialPlantX, initialPlantY), createVector(initialPlantX, initialPlantY + 1));
 
     // console.log(genomeSequenceIn)
 
@@ -90,16 +90,8 @@ class Plant {
     const nextPossibleIndex = this.grids.plantMatter.xyToIndex(nextPossibleCell.x, nextPossibleCell.y);
     let earthType = this.grids.earth.get(nextPossibleCell.x, nextPossibleCell.y);
     if (doesPlantExistAtIndex(nextPossibleIndex) === false && earthType === SoilType.None) {
-      this.makeNewBranch(branchCellVector, nextPossibleCell);
+      this.makeNewCell(branchCellVector, nextPossibleCell);
     }
-  }
-
-  makeNewBranch(fromPos, toPos) {
-    let branchAngleFrom = fromPos.angleBetween(toPos);
-    this.grids.plantMatter.set(toPos.x, toPos.y, this);
-    this.grids.cellAngles.set(toPos.x, toPos.y, branchAngleFrom)
-    this.cells.push(this.grids.plantMatter.xyToIndex(toPos.x, toPos.y));
-    this.availableMoistureForGrowth -= 1;
   }
 
   attemptToGrowRoot() {
@@ -116,14 +108,15 @@ class Plant {
     const nextPossibleIndex = this.grids.plantMatter.xyToIndex(nextPossibleRoot.x, nextPossibleRoot.y);
     let earthType = this.grids.earth.get(nextPossibleRoot.x, nextPossibleRoot.y);
     if (doesPlantExistAtIndex(nextPossibleIndex) === false && earthType === SoilType.Soft) {
-      this.makeNewRoot(rootVector, nextPossibleRoot);
+      this.makeNewCell(rootVector, nextPossibleRoot);
     }
   }
 
-  makeNewRoot(fromPos, toPos) {
-    let rootAngleFrom = fromPos.angleBetween(toPos);
-    this.grids.plantMatter.set(toPos.x, toPos.y, this);
-    this.grids.cellAngles.set(toPos.x, toPos.y, rootAngleFrom)
+  makeNewCell(fromPos, toPos) {
+    let angle = fromPos.angleBetween(toPos);
+    const index = this.grids.plantMatter.xyToIndex(toPos.x, toPos.y);
+    this.grids.plantMatter.cells[index] = this;
+    this.grids.cellAngles.cells[index] = angle;
     this.cells.push(this.grids.plantMatter.xyToIndex(toPos.x, toPos.y));
     this.availableMoistureForGrowth -= 1;
   }
@@ -134,6 +127,8 @@ class Plant {
   }
 
   attemptToKillCell() {
+    const toRemoveIndex = this.cells.indexOf(this.cellPick);
+    this.cells.splice(toRemoveIndex, 1);
     this.grids.plantMatter.cells[this.cellPick] = null;
   }
 }
