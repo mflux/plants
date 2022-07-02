@@ -106,7 +106,7 @@ function renderScene() {
   renderGrid(grids.earth, (index, value) => {
     switch (value) {
       case SoilType.None:
-        return color(255, 255, 255);
+        return color(173, 198, 222);
       case SoilType.Soft:
         // Color soil differently depending on moisture.
         const moisture = grids.moisture.cells[index] / 10;
