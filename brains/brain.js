@@ -22,10 +22,9 @@ class ABrain {
 		this.senses = [
 			this.Sens_RootMoistureLocal,
 			this.Sens_RootMoistureDir,
-			this.Sens_AvailableMoisture,
 			this.Sens_Random,
 			this.Sens_Osc,
-			this.Sens_Energy,
+			this.Sens_AvailableMoisture,
 			this.Sens_MoveDirection,
 			this.Sens_Root_GrowthPotential,
 			this.Sens_Branch_GrowthPotential,
@@ -155,8 +154,8 @@ class ABrain {
 		return randN;
 	}
 
-	Sens_Energy(agentObj) {
-		let energyN = map(agentObj.availableMoistureForGrowth, 0, 10000, 0, 1);
+	Sens_AvailableMoisture(agentObj) {
+		let energyN = map(agentObj.availableMoistureForGrowth, 0, agentObj.cells.length, 0, 1);
 		if (debugBrain) console.log("sens available moisture now : " + energyN);
 		return energyN;
 	}
@@ -167,10 +166,6 @@ class ABrain {
 
 		if (debugBrain) console.log("sens Internal Clock : " + newClock);
 		return newClock;
-	}
-
-	Sens_AvailableMoisture(agentObj) {
-		return agentObj.availableMoistureForGrowth;
 	}
 
 
