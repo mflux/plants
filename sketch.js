@@ -107,11 +107,13 @@ function draw() {
 
   dom_debugText.html(`
   <pre>
-  Frame time:       ${timeDelta}
-  Cells:   ${PP.cells.length}
+  Reward:           ${rewardFunction(PP)}
+  ↪ Cells:            ${PP.cells.length}
+  ↪ Moisture:         ${grids.moisture.computeTotalMoistureForIndices(PP.cells)}
   Root pick:        ${PP.cellPick}
   Plant age:        ${PP.age}
   Internal neurons: ${PP.InternalNeurons}
+  Frame time:       ${timeDelta}
   </pre>
   `);
 

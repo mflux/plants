@@ -55,11 +55,11 @@ function stepEvolution() {
       const result = finishEvolution(PP.GSequence, rewardFunction(PP));
       if (bestResult === undefined) {
         bestResult = result;
-        console.log("New Best Plant " + bestResult.reward + " ammount of moisture");
+        console.log("New Best Plant " + bestResult.reward + " reward");
       }
       else if (result.reward > bestResult.reward) {
         bestResult = result;
-        console.log("New Best Plant " + bestResult.reward + " ammount of moisture");
+        console.log("New Best Plant " + bestResult.reward + " reward");
       }
 
       console.log(PP.GSequence);
