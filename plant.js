@@ -47,18 +47,20 @@ class Plant {
   }
 
   stepSim() {
-
-    // Moisture is absorbed by cells.
-    const moistureFromCells = this.grids.moisture.computeTotalMoistureForIndices(this.cells) * 0.5;
-    this.availableMoistureForGrowth += moistureFromCells;
-
     // Moisture becomes depleted for each cell consuming.
     this.cells.forEach(index => {
-      this.grids.moisture.cells[index] -= 0.05;
+      this.availableMoistureForGrowth -= 0.1;
+      if (this.grids.moisture.cells[index] > 0) {
+        this.availableMoistureForGrowth += 0.3;
+      }
+      this.grids.moisture.cells[index] -= 0.03;
       if (this.grids.moisture.cells[index] < 0) {
         this.grids.moisture.cells[index] = 0;
       }
     });
+    if (this.availableMoistureForGrowth < 0) {
+      this.availableMoistureForGrowth = 0;
+    }
   }
 
   runBrain() {
