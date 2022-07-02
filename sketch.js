@@ -67,6 +67,8 @@ function draw() {
   // Place pixels based on the grid.
   loadPixels();
 
+  const drySoilColor = color(138, 121, 107);
+  const wetSoilColor = color(54, 34, 17);
   renderGrid(grids.earth, (index, value) => {
     switch (value) {
       case SoilType.None:
@@ -74,7 +76,7 @@ function draw() {
       case SoilType.Soft:
         // Color soil differently depending on moisture.
         const moisture = grids.moisture.cells[index];
-        return color(75 + 60 * moisture, 42 + 60 * moisture, 22 + 60 * moisture);
+        return lerpColor(drySoilColor, wetSoilColor, moisture);
       case SoilType.Hard:
         return color(54, 52, 51);
       default:
@@ -105,7 +107,7 @@ function draw() {
   <pre>
   Reward:           ${rewardFunction(PP)}
   ↪ Cells:            ${PP.cells.length}
-  ↪ Moisture:         ${grids.moisture.computeTotalMoistureForIndices(PP.cells)}
+  ↪ A-Moisture:       ${PP.availableMoistureForGrowth}
   Root pick:        ${PP.cellPick}
   Plant age:        ${PP.age}
   Internal neurons: ${PP.InternalNeurons}

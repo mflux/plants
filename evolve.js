@@ -1,7 +1,7 @@
 const GIVE_UP_AGE = 20;
 
 // Resets evolution upon reaching this age.
-var MAX_PLANT_AGE = 1500;
+var MAX_PLANT_AGE = 10000;
 
 let PP;// one plant for testing, later make an array instead
 
@@ -34,7 +34,7 @@ function restartEvolution() {
   // create one plant for testing
   let GSEQ = makeRandomGeneSequence();
 
-  // GSEQ = ['4C2E80A9', 'B4556A64', '93BAA18C', '5ADD329C', 'E011A1A8', '98FCA112', '27F946DC', '942EC07C', '08C4ABB5', 'DCD6ABE2', 'D8FAA5CE', '2AE84BF2', '7F8BED74', 'BF360034', 'CAFE2638', '1BA0CAD8', '3E8E8279', '014E1DA5'];
+  GSEQ = ['044517E1', 'E7F6CE7D', '8C9CB032', '875FDCC4', 'F30B4DD4', 'DBBD2D6E', 'DC572B1A', 'CF834DCB', '0F8ED13A', 'A2E1F438', '7CC82C28', 'C272B2AC'];
 
 
   if (bestResult !== undefined) {
@@ -45,7 +45,6 @@ function restartEvolution() {
   return PP;
 }
 
-// Called every draw step.
 function stepEvolution() {
   PP.stepSim();
   PP.runBrain();
@@ -75,8 +74,7 @@ function stepEvolution() {
 
 function rewardFunction(plant) {
   let totalCellsResult = plant.cells.length;
-  let totalMoistureResult = grids.moisture.computeTotalMoistureForIndices(plant.cells)
-  return round(totalMoistureResult / 10000) + totalCellsResult;
+  return totalCellsResult;
 }
 
 function finishEvolution(geneSequence, reward) {

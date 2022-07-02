@@ -31,9 +31,9 @@ class Moisture extends Grid {
 
   // Computes the total moisture for the given indices.
   computeTotalMoistureForIndices(indices) {
-    return indices.reduce((totalMoisture, rootIndex) => {
-      return totalMoisture + grids.moisture.getByIndex(rootIndex);
-    });
+    return indices.reduce((totalMoisture, index) => {
+      return totalMoisture + this.getByIndex(index);
+    }, 0);
   }
 }
 
@@ -44,7 +44,7 @@ function generateMoistureGrid(width, height) {
     const v = noise(x * moistureNoiseScale * 10, y * moistureNoiseScale * 20);
     const soilType = grids.earth.get(x, y);
     if (soilType == SoilType.Soft) {
-      return v * 2;
+      return v;
     }
     return 0;
   });

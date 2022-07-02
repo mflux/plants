@@ -22,7 +22,7 @@ class ABrain {
 		this.senses = [
 			this.Sens_RootMoistureLocal,
 			this.Sens_RootMoistureDir,
-			this.Sens_MoistureTotal,
+			this.Sens_AvailableMoisture,
 			this.Sens_Random,
 			this.Sens_Osc,
 			this.Sens_Energy,
@@ -160,8 +160,8 @@ class ABrain {
 		return newClock;
 	}
 
-	Sens_MoistureTotal(agentObj) {
-		return grids.moisture.computeTotalMoistureForIndices(agentObj.cells);
+	Sens_AvailableMoisture(agentObj) {
+		return agentObj.availableMoistureForGrowth;
 	}
 
 

@@ -13,6 +13,7 @@ class Plant {
     this.GSequence = genomeSequenceIn
 
     this.health = 100;
+    this.availableMoistureForGrowth = 0;
     this.internalClock = 0;
     this.clockSpeed = 0.1;
     this.responsiveness = 1;
@@ -46,7 +47,14 @@ class Plant {
   }
 
   stepSim() {
-    this.totalMoisture = this.moisture
+    const moistureFromCells = this.grids.moisture.computeTotalMoistureForIndices(this.cells);
+    this.availableMoistureForGrowth += moistureFromCells;
+    this.cells.forEach(index => {
+      this.grids.moisture.cells[index] -= 0.1;
+      if (this.grids.moisture.cells[index] < 0) {
+        this.grids.moisture.cells[index] = 0;
+      }
+    });
   }
 
   runBrain() {
@@ -60,12 +68,14 @@ class Plant {
   }
 
   attemptToGrowBranch() {
+    if (this.availableMoistureForGrowth < 0) {
+      return;
+    }
     const spreadAngle = this.spreadAngle;
     const myDegrees = map(random(), 0, 1, 90 - spreadAngle, 90 + spreadAngle);
     const dirVec = p5.Vector.fromAngle(radians(myDegrees), 2.5);
     dirVec.x = round(dirVec.x)
     dirVec.y = round(dirVec.y)
-
 
     const branchCellVector = this.grids.plantMatter.indexToVector(this.cells[this.cellPick]);
 
@@ -74,8 +84,6 @@ class Plant {
       console.log(this.cellPick)
       console.log(branchCellVector)
     }
-
-
 
     const nextPossibleCell = p5.Vector.add(branchCellVector, dirVec);
 
@@ -91,10 +99,13 @@ class Plant {
     this.grids.plantMatter.set(toPos.x, toPos.y, this);
     this.grids.cellAngles.set(toPos.x, toPos.y, branchAngleFrom)
     this.cells.push(this.grids.plantMatter.xyToIndex(toPos.x, toPos.y));
+    this.availableMoistureForGrowth -= 1;
   }
 
-
   attemptToGrowRoot() {
+    if (this.availableMoistureForGrowth < 0) {
+      return;
+    }
     const spreadAngle = this.spreadAngle;
     const myDegrees = map(random(), 0, 1, 90 + spreadAngle, 90 - spreadAngle);
     const dirVec = p5.Vector.fromAngle(radians(myDegrees), 1);
@@ -114,7 +125,7 @@ class Plant {
     this.grids.plantMatter.set(toPos.x, toPos.y, this);
     this.grids.cellAngles.set(toPos.x, toPos.y, rootAngleFrom)
     this.cells.push(this.grids.plantMatter.xyToIndex(toPos.x, toPos.y));
-
+    this.availableMoistureForGrowth -= 1;
   }
 
   // Returns true if the plant has grown at all. Else returns false.
