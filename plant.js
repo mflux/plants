@@ -143,7 +143,7 @@ class Plant {
   }
 
   attemptToKillCell() {
-    const toRemoveIndex = this.cells.indexOf(this.cellPick);
+    const toRemoveIndex = this.cells[this.cellPick];
     this.cells.splice(toRemoveIndex, 1);
     this.grids.plantMatter.cells[this.cellPick] = null;
   }

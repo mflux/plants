@@ -15,20 +15,21 @@ const SIM_HEIGHT = 256;
 
 var debugBrain = false;
 
+let STEPS_PER_FRAME = 1;
+
+let dom_stepsPerFrameSlider;
 let dom_debugText;
 let dom_fastModeToggle;
 let dom_fastForwardButton;
+let dom_sequenceEntry;
 
 var FastMode = false;
 
-
-function toggleFastMode() {
-  if (dom_fastModeToggle.checked()) {
-    FastMode = true;
-  } else {
-    FastMode = false;
-  }
+function onSequenceEntered() {
+  enteredResult = JSON.parse(this.value());
+  restartEvolution();
 }
+
 
 // P5.js sketch.
 function setup() {
@@ -45,23 +46,35 @@ function setup() {
 
   remakeGrids();
   restartEvolution();
-  dom_fastModeToggle = createCheckbox("FastMode", 0)
-  dom_fastModeToggle.position(10, 10);
-  dom_fastModeToggle.changed(toggleFastMode);
 
-  dom_fastForwardButton = createButton("Fast Forward");
+  const sliderLabel = createP("Steps Per Frame");
+  sliderLabel.position(10, 0);
+  dom_stepsPerFrameSlider = createSlider(1, 1000, 1, 1);
+  dom_stepsPerFrameSlider.position(120, 15);
+
+  dom_fastForwardButton = createButton("Advance 100,000 Steps");
   dom_fastForwardButton.mousePressed(brrrrrrr)
-  dom_fastForwardButton.position(10, 30);
+  dom_fastForwardButton.position(10, 40);
 
   dom_debugText = createP('Nothing');
   dom_debugText.style('font-size', '16px');
   dom_debugText.position(10, 40);
+
+  const entryLabel = createP("Start With Sequence");
+  entryLabel.position(300, 0);
+  dom_sequenceEntry = createInput("");
+  dom_sequenceEntry.position(460, 13);
+  dom_sequenceEntry.input(onSequenceEntered);
 }
 
 let lastStepTime = 0;
 
 function draw() {
-  stepEvolution();
+  STEPS_PER_FRAME = dom_stepsPerFrameSlider.value();
+
+  for (let i = 0; i < STEPS_PER_FRAME; i++) {
+    stepEvolution();
+  }
 
   renderScene();
 
@@ -79,12 +92,6 @@ function draw() {
   Frame time:       ${timeDelta}
   </pre>
   `);
-
-  if (FastMode) {
-    for (let i = 0; i < 1000; i++) {
-      stepEvolution();
-    }
-  }
 
 }
 

@@ -231,6 +231,7 @@ class ABrain {
 
 	Act_KillCell(trigger, agentObj) {
 		if (trigger > 0.5) {
+			if (debugBrain) console.log("Action Kill  :  ")
 			agentObj.attemptToKillCell();
 		}
 	}

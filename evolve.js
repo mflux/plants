@@ -4,7 +4,7 @@ const GIVE_UP_AGE = 20;
 var MAX_PLANT_AGE = 50000;
 
 // If a plant hasn't grown for this many steps, stop stepping.
-const PLANT_AGE_TIMEOUT = 1000;
+const PLANT_AGE_TIMEOUT = 200;
 
 let PP;// one plant for testing, later make an array instead
 
@@ -25,6 +25,8 @@ class Result {
 
 let results = [];
 
+let enteredResult = null;
+
 function remakeGrids() {
   grids.earth = generateEarth(SIM_WIDTH, SIM_HEIGHT);
   grids.moisture = generateMoistureGrid(SIM_WIDTH, SIM_HEIGHT);
@@ -41,9 +43,17 @@ function restartEvolution() {
   // GSEQ = ["00B17AEE","8CCE4D3D","6293D24E","0615B9B7","9D0448B8","02C8B368","E242B96B","2A8F1ABC","AFC0B648","4FC22F0C"];
   // GSEQ = ["4BA1C7D4","D8562EAC","2F043818","06496C88","B6B989C2","A797659B","FAB97D43","0E87BBC9","D6D86ADC","0E1F1913","D96689FE","D22799A1","7F92B878","8339BC9C","243DD132","09B8B10E","B29D8FF8","8D98AA18","BD443B38"]
 
-  if (bestResult !== undefined) {
-    GSEQ = mutateGeneSequence(bestResult.geneSequence);
+  if (enteredResult != null) {
+    GSEQ = enteredResult;
+    results = [];
+    enteredResult = null;
   }
+  else {
+    if (bestResult !== undefined) {
+      GSEQ = mutateGeneSequence(bestResult.geneSequence);
+    }
+  }
+
 
   PP = spawnPlant(grids, GSEQ);
   return PP;
@@ -81,7 +91,7 @@ function rewardFunction(plant) {
   let aboveGroundCells = plant.cells.filter(index => {
     return plant.grids.earth.cells[index] === SoilType.None;
   });
-  return totalCellsResult + aboveGroundCells.length * 3;
+  return totalCellsResult + aboveGroundCells.length * 6;
 }
 
 function finishEvolution(geneSequence, reward) {
