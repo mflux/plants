@@ -47,10 +47,14 @@ class Plant {
   }
 
   stepSim() {
-    const moistureFromCells = this.grids.moisture.computeTotalMoistureForIndices(this.cells);
+
+    // Moisture is absorbed by cells.
+    const moistureFromCells = this.grids.moisture.computeTotalMoistureForIndices(this.cells) * 0.5;
     this.availableMoistureForGrowth += moistureFromCells;
+
+    // Moisture becomes depleted for each cell consuming.
     this.cells.forEach(index => {
-      this.grids.moisture.cells[index] -= 0.1;
+      this.grids.moisture.cells[index] -= 0.05;
       if (this.grids.moisture.cells[index] < 0) {
         this.grids.moisture.cells[index] = 0;
       }

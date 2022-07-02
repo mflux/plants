@@ -13,13 +13,14 @@ let bestResult;
 var bestGenes = [];
 
 class Result {
-  constructor(geneSequence, reward) {
+  constructor(geneSequence, reward, img) {
     this.geneSequence = geneSequence;
     this.reward = reward;
+    this.image = img;
   }
 }
 
-const results = [];
+let results = [];
 
 function remakeGrids() {
   grids.earth = generateEarth(SIM_WIDTH, SIM_HEIGHT);
@@ -34,10 +35,10 @@ function restartEvolution() {
 
   // create one plant for testing
   let GSEQ = makeRandomGeneSequence();
-
+  // GSEQ = ['A3452258', '5D89E5BC', 'F1FA113F', 'FC9DE611', 'C8CB5322', '5F9AE8B8', 'C51B5CB5', '738BAE12', 'C531F3B9', 'E4B51C58', '9156A703', '680FBB7C', '0E5E4A89', 'AAC1F3F8', '121E4452', 'E1D085CC', '39BFC2BD'];
   // GSEQ = ['CA7C2E07', 'A748098E', '3AFE3104', '4D0F2CC4', 'AE097594', '54E3D98C', '1257A868', 'F73A3E36', '1F8FA904', '87EADE94', '3F8A2BE7', 'C9684926', 'F5493544', 'F085339A'];
   // Different strategy?
-  // GSEQ = ['083DCC7C', '352DA57C', 'E79D827E', '6021B314', 'BFFFC33C', '127F32DC', '05927A28', '0D981BFE', 'C09F7338', '02CF2265', '20CF6E63', '1F114D53', '67D77482', 'A1687B8B']
+  // GSEQ = ['4CF613F4', '7DC8148E', 'E79D827E', '6021B314', 'BFFFC33C', '127F32DC', '78D54861', '038B8288', '5160B5A4', '89C7A0D8', '3F34BE6A', '1F114D53', '67D77482', 'A1687B8B']
 
   if (bestResult !== undefined) {
     GSEQ = mutateGeneSequence(bestResult.geneSequence);
@@ -80,14 +81,34 @@ function rewardFunction(plant) {
 }
 
 function finishEvolution(geneSequence, reward) {
-  const result = new Result(geneSequence, reward);
+  renderScene();
+  const result = new Result(geneSequence, reward, get().canvas);
   results.push(result);
 
   results.sort((a, b) => {
     return b.reward - a.reward;
   });
 
+  results = results.slice(0, 20);
+  generateResultsPage();
   return result;
+}
+
+function generateResultsPage() {
+  const resultsList = document.getElementById("results");
+  resultsList.innerHTML = "";
+  results.forEach(result => {
+    const resultPanel = document.createElement("div");
+    // const img = createImage(width, height);
+    // img.copy(get());
+    resultPanel.innerHTML = `
+      <pre>${JSON.stringify(result.geneSequence)}</pre>
+      <div>Reward: ${result.reward}</div>
+    `;
+    resultPanel.appendChild(result.image);
+    resultsList.appendChild(resultPanel);
+  });
+
 }
 
 // Returns a copy of geneIn with one modified synapse.

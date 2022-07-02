@@ -62,6 +62,33 @@ let lastStepTime = 0;
 
 function draw() {
   stepEvolution();
+
+  renderScene();
+
+  timeDelta = millis() - lastStepTime;
+  lastStepTime = millis();
+
+  dom_debugText.html(`
+  <pre>
+  Reward:           ${rewardFunction(PP)}
+  ↪ Cells:            ${PP.cells.length}
+  ↪ A-Moisture:       ${PP.availableMoistureForGrowth}
+  Root pick:        ${PP.cellPick}
+  Plant age:        ${PP.age}
+  Internal neurons: ${PP.InternalNeurons}
+  Frame time:       ${timeDelta}
+  </pre>
+  `);
+
+  if (FastMode) {
+    for (let i = 0; i < 1000; i++) {
+      stepEvolution();
+    }
+  }
+
+}
+
+function renderScene() {
   fill(0)
   background(1, 1, 1);
   // Place pixels based on the grid.
@@ -104,28 +131,6 @@ function draw() {
   });
 
   updatePixels();
-
-  timeDelta = millis() - lastStepTime;
-  lastStepTime = millis();
-
-  dom_debugText.html(`
-  <pre>
-  Reward:           ${rewardFunction(PP)}
-  ↪ Cells:            ${PP.cells.length}
-  ↪ A-Moisture:       ${PP.availableMoistureForGrowth}
-  Root pick:        ${PP.cellPick}
-  Plant age:        ${PP.age}
-  Internal neurons: ${PP.InternalNeurons}
-  Frame time:       ${timeDelta}
-  </pre>
-  `);
-
-  if (FastMode) {
-    for (let i = 0; i < 1000; i++) {
-      stepEvolution();
-    }
-  }
-
 }
 
 function brrrrrrr() {
