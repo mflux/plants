@@ -5,6 +5,10 @@ var MAX_PLANT_AGE = 1500;
 
 let PP;// one plant for testing, later make an array instead
 
+// A dict of grids, each representing a grid of data.
+// Instantiated on setup().
+const grids = {};
+
 let bestResult;
 var bestGenes = [];
 
@@ -30,19 +34,20 @@ function restartEvolution() {
   // create one plant for testing
   let GSEQ = makeRandomGeneSequence();
 
-  GSEQ = ['4C2E80A9', 'B4556A64', '93BAA18C', '5ADD329C', 'E011A1A8', '98FCA112', '27F946DC', '942EC07C', '08C4ABB5', 'DCD6ABE2', 'D8FAA5CE', '2AE84BF2', '7F8BED74', 'BF360034', 'CAFE2638', '1BA0CAD8', '3E8E8279', '014E1DA5'];
+  // GSEQ = ['4C2E80A9', 'B4556A64', '93BAA18C', '5ADD329C', 'E011A1A8', '98FCA112', '27F946DC', '942EC07C', '08C4ABB5', 'DCD6ABE2', 'D8FAA5CE', '2AE84BF2', '7F8BED74', 'BF360034', 'CAFE2638', '1BA0CAD8', '3E8E8279', '014E1DA5'];
 
 
   if (bestResult !== undefined) {
     GSEQ = mutateGeneSequence(bestResult.geneSequence);
   }
 
-  PP = spawnPlant(grids.earth, grids.cellAngles, GSEQ);
+  PP = spawnPlant(grids, GSEQ);
   return PP;
 }
 
 // Called every draw step.
 function stepEvolution() {
+  PP.stepSim();
   PP.runBrain();
 
   // give up early if no growth

@@ -13,7 +13,7 @@ function runTests() {
       console.log(`Running test: ${testName}... Passed`);
     }
     else {
-      console.warn(`Running test: ${testName}... Failed Expected: ${testValue} Got: ${assertValue}`);
+      console.warn(`Running test: ${testName}... Failed Expected: ${assertValue} Got: ${testValue}`);
     }
   });
 }

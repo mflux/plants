@@ -15,10 +15,6 @@ const SIM_HEIGHT = 256;
 
 var debugBrain = false;
 
-// A dict of grids, each representing a grid of data.
-// Instantiated on setup().
-const grids = {};
-
 let dom_debugText;
 let dom_fastModeToggle;
 let dom_fastForwardButton;

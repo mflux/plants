@@ -1,8 +1,6 @@
 class Plant {
-  constructor(initialPlantX, initialPlantY, plantMatterGrid, earthGrid, cellAngles, genomeSequenceIn) {
-    this.plantMatterGrid = plantMatterGrid;
-    this.earthGrid = earthGrid;
-    this.cellAngles = cellAngles;
+  constructor(initialPlantX, initialPlantY, grids, genomeSequenceIn) {
+    this.grids = grids;
 
     this.cells = [];
 
@@ -47,6 +45,10 @@ class Plant {
 
   }
 
+  stepSim() {
+    this.totalMoisture = this.moisture
+  }
+
   runBrain() {
     if (debugBrain) console.log("===============START BRAIN===============");
     for (let s in this.brains) {
@@ -65,7 +67,7 @@ class Plant {
     dirVec.y = round(dirVec.y)
 
 
-    const branchCellVector = this.plantMatterGrid.indexToVector(this.cells[this.cellPick]);
+    const branchCellVector = this.grids.plantMatter.indexToVector(this.cells[this.cellPick]);
 
     if (branchCellVector.y < 20) {
       return
@@ -77,8 +79,8 @@ class Plant {
 
     const nextPossibleCell = p5.Vector.add(branchCellVector, dirVec);
 
-    const nextPossibleIndex = this.plantMatterGrid.xyToIndex(nextPossibleCell.x, nextPossibleCell.y);
-    let earthType = this.earthGrid.get(nextPossibleCell.x, nextPossibleCell.y);
+    const nextPossibleIndex = this.grids.plantMatter.xyToIndex(nextPossibleCell.x, nextPossibleCell.y);
+    let earthType = this.grids.earth.get(nextPossibleCell.x, nextPossibleCell.y);
     if (doesPlantExistAtIndex(nextPossibleIndex) === false && earthType === SoilType.None) {
       this.makeNewBranch(branchCellVector, nextPossibleCell);
     }
@@ -86,9 +88,9 @@ class Plant {
 
   makeNewBranch(fromPos, toPos) {
     let branchAngleFrom = fromPos.angleBetween(toPos);
-    this.plantMatterGrid.set(toPos.x, toPos.y, this);
-    this.cellAngles.set(toPos.x, toPos.y, branchAngleFrom)
-    this.cells.push(this.plantMatterGrid.xyToIndex(toPos.x, toPos.y));
+    this.grids.plantMatter.set(toPos.x, toPos.y, this);
+    this.grids.cellAngles.set(toPos.x, toPos.y, branchAngleFrom)
+    this.cells.push(this.grids.plantMatter.xyToIndex(toPos.x, toPos.y));
   }
 
 
@@ -98,10 +100,10 @@ class Plant {
     const dirVec = p5.Vector.fromAngle(radians(myDegrees), 1);
     dirVec.x = round(dirVec.x)
     dirVec.y = round(dirVec.y)
-    const rootVector = this.plantMatterGrid.indexToVector(this.cells[this.cellPick]);
+    const rootVector = this.grids.plantMatter.indexToVector(this.cells[this.cellPick]);
     const nextPossibleRoot = p5.Vector.add(rootVector, dirVec);
-    const nextPossibleIndex = this.plantMatterGrid.xyToIndex(nextPossibleRoot.x, nextPossibleRoot.y);
-    let earthType = this.earthGrid.get(nextPossibleRoot.x, nextPossibleRoot.y);
+    const nextPossibleIndex = this.grids.plantMatter.xyToIndex(nextPossibleRoot.x, nextPossibleRoot.y);
+    let earthType = this.grids.earth.get(nextPossibleRoot.x, nextPossibleRoot.y);
     if (doesPlantExistAtIndex(nextPossibleIndex) === false && earthType === SoilType.Soft) {
       this.makeNewRoot(rootVector, nextPossibleRoot);
     }
@@ -109,9 +111,9 @@ class Plant {
 
   makeNewRoot(fromPos, toPos) {
     let rootAngleFrom = fromPos.angleBetween(toPos);
-    this.plantMatterGrid.set(toPos.x, toPos.y, this);
-    this.cellAngles.set(toPos.x, toPos.y, rootAngleFrom)
-    this.cells.push(this.plantMatterGrid.xyToIndex(toPos.x, toPos.y));
+    this.grids.plantMatter.set(toPos.x, toPos.y, this);
+    this.grids.cellAngles.set(toPos.x, toPos.y, rootAngleFrom)
+    this.cells.push(this.grids.plantMatter.xyToIndex(toPos.x, toPos.y));
 
   }
 
@@ -121,7 +123,7 @@ class Plant {
   }
 }
 
-// Looks for the nearest soft soil, given an x and  earth grid.
+// Looks for the nearest soft soil, given an x and earth grid.
 function searchForAppropriatePlantY(x, earthGrid) {
   let y = 0;
   let tries = 0;
@@ -130,14 +132,14 @@ function searchForAppropriatePlantY(x, earthGrid) {
     y += 1;
     tries++;
   }
-  return y - 1;
+  return y;
 }
 
 // Spawns a plant, given an earth grid.
-function spawnPlant(earthGrid, cellAngles, genomeSequence) {
-  const plantX = int(random(20, earthGrid.width - 20));
-  const plantY = searchForAppropriatePlantY(plantX, earthGrid);
-  return new Plant(plantX, plantY, grids.plantMatter, earthGrid, cellAngles, genomeSequence);
+function spawnPlant(grids, genomeSequence) {
+  const plantX = int(random(20, grids.earth.width - 20));
+  const plantY = searchForAppropriatePlantY(plantX, grids.earth);
+  return new Plant(plantX, plantY, grids, genomeSequence);
 }
 
 

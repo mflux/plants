@@ -22,6 +22,7 @@ class ABrain {
 		this.senses = [
 			this.Sens_RootMoistureLocal,
 			this.Sens_RootMoistureDir,
+			this.Sens_MoistureTotal,
 			this.Sens_Random,
 			this.Sens_Osc,
 			this.Sens_Energy,
@@ -101,54 +102,54 @@ class ABrain {
 
 
 	Sens_Root_GrowthPotential(agentObj) {
-		let sensAmmt = computeNormalizedRootGrowthPotential(agentObj.cellPick, agentObj.earthGrid, agentObj.plantMatterGrid)
+		let sensAmmt = computeNormalizedRootGrowthPotential(agentObj.cellPick, agentObj.grids.earth, agentObj.grids.plantMatter);
 		if (debugBrain) console.log('sens root growth Potential : ' + sensAmmt)
-		return sensAmmt
+		return sensAmmt;
 	}
 
 	Sens_Branch_GrowthPotential(agentObj) {
-		let sensAmmt = computeNormalizedBranchGrowthPotential(agentObj.cellPick, agentObj.earthGrid, agentObj.plantMatterGrid)
+		let sensAmmt = computeNormalizedBranchGrowthPotential(agentObj.cellPick, agentObj.grids.earth, agentObj.grids.plantMatter);
 		if (debugBrain) console.log('sens branch growth Potential : ' + sensAmmt)
-		return sensAmmt
+		return sensAmmt;
 	}
 
 	Sens_MoveDirection(agentObj) {
 		let moveDir = map(agentObj.growDirection, -3.1415, 3.1415, -1, 1);
 		if (debugBrain) console.log('sens move direction  : ' + moveDir)
-		return moveDir
+		return moveDir;
 	}
 
 	Sens_RootMoistureLocal(agentObj) {
 		let rootPicVec = grids.moisture.indexToVector(agentObj.cells[agentObj.cellPick])
 		let foundMoisture = grids.moisture.computeLocalMoisture(rootPicVec.x, rootPicVec.y).totalLocalMoisture;
 		if (debugBrain) console.log("Sens_local moisture : " + foundMoisture)
-		return map(foundMoisture, 0, 10, -1, 1)
+		return map(foundMoisture, 0, 10, -1, 1);
 	}
 
 	Sens_RootMoistureDir(agentObj) {
 
-		let rootPicVec = grids.moisture.indexToVector(agentObj.cells[agentObj.cellPick])
+		let rootPicVec = grids.moisture.indexToVector(agentObj.cells[agentObj.cellPick]);
 		let foundMoisture = grids.moisture.computeLocalMoisture(rootPicVec.x, rootPicVec.y).highestLocalMoistureDirection;
 		let foundHeading = map(foundMoisture.heading(), -3.1415, 3.1415, -1, 1);
 		if (debugBrain) console.log("Sens moisture direction : " + foundHeading)
-		return foundHeading
+		return foundHeading;
 	}
 
 	Sens_Age(agentObj) {
 		let ageN = map(agentObj.age, 0, MAX_PLANT_AGE, 0, 1);
 		if (debugBrain) console.log("sens age now : " + ageN);
-		return ageN
+		return ageN;
 	}
 	Sens_Random(agentObj) {
-		let randN = random(-1, 1)
+		let randN = random(-1, 1);
 		if (debugBrain) console.log("sens random : " + randN);
-		return randN
+		return randN;
 	}
 
 	Sens_Energy(agentObj) {
 		let energyN = map(agentObj.energy, 0, 100, 0, 1);
 		if (debugBrain) console.log("sens energy now : " + energyN);
-		return energyN
+		return energyN;
 	}
 
 	Sens_Osc(agentObj) {			// oscillator
@@ -156,7 +157,11 @@ class ABrain {
 		let newClock = sin(agentObj.internalClock);
 
 		if (debugBrain) console.log("sens Internal Clock : " + newClock);
-		return newClock
+		return newClock;
+	}
+
+	Sens_MoistureTotal(agentObj) {
+		return grids.moisture.computeTotalMoistureForIndices(agentObj.cells);
 	}
 
 
@@ -180,12 +185,12 @@ class ABrain {
 	}
 
 	Act_SSpread(trigger, agentObj) {
-		agentObj.spreadAngle += trigger
+		agentObj.spreadAngle += trigger;
 		if (debugBrain) console.log("Set spread to  :  " + agentObj.spreadAngle);
 	}
 	Act_SetRootRange(trigger, agentObj) {
 		// set root range
-		agentObj.rootRange = int(map(trigger, -1, 1, agentObj.cells.length))
+		agentObj.rootRange = int(map(trigger, -1, 1, agentObj.cells.length));
 		if (debugBrain) console.log("Set range to  :  " + agentObj.rootRange)
 	}
 
@@ -193,11 +198,11 @@ class ABrain {
 		// console.log("SetRoot Trigger " + trigger)
 		if (isNaN(trigger)) {
 			// console.log("ESCAPE")
-			return
+			return;
 		}
-		let maxRootIdx = agentObj.cells.length
-		let minRootIdx = 0
-		let pickID = int(abs(map(trigger, -1, 1, minRootIdx, maxRootIdx))) // sets the root to look at.
+		let maxRootIdx = agentObj.cells.length;
+		let minRootIdx = 0;
+		let pickID = int(abs(map(trigger, -1, 1, minRootIdx, maxRootIdx))); // sets the root to look at.
 		agentObj.cellPick = pickID;
 		if (debugBrain) console.log("Set root to  :  " + agentObj.cellPick)
 	}
