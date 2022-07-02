@@ -35,8 +35,9 @@ function restartEvolution() {
   // create one plant for testing
   let GSEQ = makeRandomGeneSequence();
 
-  GSEQ = ['CA7C2E07', 'A748098E', '90F50EB8', '4D0F2CC4', '2D0C4ED4', '54E3D98C', '1257A868', 'F73A3E36', '1F8FA904', '87EADE94', '3F8A2BE7', 'C9684926', 'F5493544', '0E81FAEA'];
-
+  // GSEQ = ['CA7C2E07', 'A748098E', '3AFE3104', '4D0F2CC4', 'AE097594', '54E3D98C', '1257A868', 'F73A3E36', '1F8FA904', '87EADE94', '3F8A2BE7', 'C9684926', 'F5493544', 'F085339A'];
+  // Different strategy?
+  // GSEQ = ['083DCC7C', '352DA57C', 'E79D827E', '6021B314', 'BFFFC33C', '127F32DC', '05927A28', '0D981BFE', 'C09F7338', '02CF2265', '20CF6E63', '1F114D53', '67D77482', 'A1687B8B']
 
   if (bestResult !== undefined) {
     GSEQ = mutateGeneSequence(bestResult.geneSequence);
